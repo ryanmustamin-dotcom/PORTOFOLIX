@@ -1,3 +1,82 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "avatar-1",
+      "imageUrl": "https://images.unsplash.com/photo-1540569014015-19a7be504e3a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NzE5OTM4NjZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "User avatar 1",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "avatar-2",
+      "imageUrl": "https://images.unsplash.com/photo-1540569014015-19a7be504e3a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NzE5OTM4NjZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "User avatar 2",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "avatar-3",
+      "imageUrl": "https://images.unsplash.com/photo-1600180758890-6b94519a8ba6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NzE5OTM4NjZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "User avatar 3",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "project-thumb-1",
+      "imageUrl": "https://images.unsplash.com/photo-1633596683562-4a47eb4983c5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxhYnN0cmFjdCUyMDNkfGVufDB8fHx8MTc3MTkyMjc1M3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Abstract 3D render",
+      "imageHint": "abstract 3d"
+    },
+    {
+      "id": "project-thumb-2",
+      "imageUrl": "https://images.unsplash.com/photo-1517265035603-faefa167335b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxsYW5kc2NhcGUlMjBwaG90b2dyYXBoeXxlbnwwfHx8fDE3NzE5OTYxMDV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Serene landscape photography",
+      "imageHint": "landscape photography"
+    },
+    {
+      "id": "project-thumb-3",
+      "imageUrl": "https://images.unsplash.com/photo-1633044088158-a87199429c34?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtaW5pbWFsaXN0JTIwYnJhbmRpbmd8ZW58MHx8fHwxNzcxOTgyMzA2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Minimalist branding design",
+      "imageHint": "minimalist branding"
+    },
+    {
+      "id": "project-thumb-4",
+      "imageUrl": "https://images.unsplash.com/photo-1762088942597-88ef9dc691fb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjaGFyYWN0ZXIlMjBpbGx1c3RyYXRpb258ZW58MHx8fHwxNzcxOTQ1Mzg2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Character illustration",
+      "imageHint": "character illustration"
+    },
+    {
+      "id": "project-thumb-5",
+      "imageUrl": "https://images.unsplash.com/photo-1698846296220-e44d9d4b9100?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxhcmNoaXRlY3R1cmUlMjBkZXNpZ258ZW58MHx8fHwxNzcxOTE0NDk2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Architectural visualization",
+      "imageHint": "architecture design"
+    },
+    {
+      "id": "project-thumb-6",
+      "imageUrl": "https://images.unsplash.com/photo-1541506618330-7c369fc759b5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxhcHAlMjBkZXNpZ258ZW58MHx8fHwxNzcxOTE2NjczfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Mobile app UI/UX design",
+      "imageHint": "app design"
+    },
+    {
+      "id": "project-thumb-7",
+      "imageUrl": "https://images.unsplash.com/photo-1578926375605-eaf7559b1458?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxkaWdpdGFsJTIwcGFpbnRpbmd8ZW58MHx8fHwxNzcxOTk2MTA1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Vibrant digital painting",
+      "imageHint": "digital painting"
+    },
+    {
+      "id": "project-thumb-8",
+      "imageUrl": "https://images.unsplash.com/photo-1606937492590-2c6e942b1951?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxwYWNrYWdpbmclMjBkZXNpZ258ZW58MHx8fHwxNzcxOTM2MDA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Product packaging design",
+      "imageHint": "packaging design"
+    },
+    {
+      "id": "project-thumb-9",
+      "imageUrl": "https://images.unsplash.com/photo-1627843240043-aa499ed215e7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxtb3Rpb24lMjBncmFwaGljc3xlbnwwfHx8fDE3NzE5OTI1NzJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Motion graphics piece",
+      "imageHint": "motion graphics"
+    },
+    {
+      "id": "header-bg",
+      "imageUrl": "https://images.unsplash.com/photo-1684139517679-032b7213ad2e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxhYnN0cmFjdCUyMGJhY2tncm91bmR8ZW58MHx8fHwxNzcxODg3OTU0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Abstract background for header",
+      "imageHint": "abstract background"
+    }
+  ]
 }
