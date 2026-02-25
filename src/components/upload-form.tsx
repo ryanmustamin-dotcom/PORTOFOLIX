@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Bot, Loader2, Sparkles, UploadCloud } from 'lucide-react';
+import { Bot, File as FileIcon, Loader2, Sparkles, UploadCloud, X } from 'lucide-react';
 
 import { generateProjectDescription } from '@/lib/actions';
 import { Button } from '@/components/ui/button';
@@ -23,6 +23,7 @@ const formSchema = z.object({
   descriptionDraft: z.string().optional(),
   suggestedTags: z.array(z.string()).optional(),
   suggestedKeywords: z.array(z.string()).optional(),
+  media: z.custom<FileList>().refine(files => files && files.length > 0, 'Please upload at least one file.'),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -30,6 +31,7 @@ type FormValues = z.infer<typeof formSchema>;
 export default function UploadForm() {
   const { toast } = useToast();
   const [isAiLoading, setIsAiLoading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -42,6 +44,8 @@ export default function UploadForm() {
       suggestedKeywords: [],
     },
   });
+
+  const watchedMedia = form.watch('media');
 
   const handleEnhanceWithAI = async () => {
     const title = form.getValues('title');
@@ -94,19 +98,63 @@ export default function UploadForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>Project Media</CardTitle>
-            <CardDescription>Upload images or videos for your project.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="border-2 border-dashed border-muted rounded-lg p-12 flex flex-col items-center justify-center text-center">
-              <UploadCloud className="h-12 w-12 text-muted-foreground" />
-              <p className="mt-4 text-muted-foreground">Drag & drop files here, or</p>
-              <Button type="button" variant="outline" className="mt-2">Browse Files</Button>
-            </div>
-          </CardContent>
-        </Card>
+        <FormField
+          control={form.control}
+          name="media"
+          render={({ field }) => (
+            <FormItem>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Project Media</CardTitle>
+                  <CardDescription>Upload images or videos for your project.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <div className="border-2 border-dashed border-muted rounded-lg p-12 flex flex-col items-center justify-center text-center">
+                      <UploadCloud className="h-12 w-12 text-muted-foreground" />
+                      <p className="mt-4 text-muted-foreground">Click the button to browse files</p>
+                      <FormControl>
+                          <Input 
+                              type="file"
+                              className="hidden"
+                              multiple
+                              ref={fileInputRef}
+                              onChange={(e) => field.onChange(e.target.files)}
+                          />
+                      </FormControl>
+                      <Button type="button" variant="outline" className="mt-2" onClick={() => fileInputRef.current?.click()}>Browse Files</Button>
+                    </div>
+
+                    {watchedMedia && watchedMedia.length > 0 && (
+                      <div className="mt-4">
+                          <p className="text-sm font-medium">Selected files:</p>
+                          <ul className="mt-2 space-y-2">
+                            {Array.from(watchedMedia).map((file, index) => (
+                                <li key={index} className="flex items-center justify-between p-2 border rounded-md bg-muted/50 text-sm">
+                                  <div className="flex items-center gap-2 truncate">
+                                      <FileIcon className="h-4 w-4 shrink-0" />
+                                      <span className="truncate">{file.name}</span>
+                                  </div>
+                                  <Button type="button" variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => {
+                                        const dataTransfer = new DataTransfer();
+                                        const files = form.getValues('media');
+                                        if(files) {
+                                            Array.from(files).filter((_, i) => i !== index).forEach(f => dataTransfer.items.add(f));
+                                        }
+                                        field.onChange(dataTransfer.files.length > 0 ? dataTransfer.files : null);
+                                  }}>
+                                      <X className="h-4 w-4"/>
+                                  </Button>
+                                </li>
+                            ))}
+                          </ul>
+                      </div>
+                    )}
+                    <FormMessage className="mt-2" />
+                </CardContent>
+              </Card>
+            </FormItem>
+          )}
+        />
 
         <Card>
           <CardHeader>
