@@ -1,11 +1,10 @@
-
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { useFirestore, useUser, useCollection } from '@/firebase';
-import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
+import { collection, query, where, getDocs, orderBy, doc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import type { UserProfile, Project } from '@/lib/types';
 import { sampleUsers, sampleProjects } from '@/lib/sample-data';
 
@@ -13,16 +12,19 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ProjectCard from '@/components/project-card';
-import { Mail, MapPin, UserPlus, Loader2 } from 'lucide-react';
+import { Mail, MapPin, UserPlus, Loader2, Check, Twitter, Instagram, Github } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import EditProfileDialog from '@/components/edit-profile-dialog';
+import { useToast } from '@/hooks/use-toast';
+import Link from 'next/link';
 
 export default function ProfilePage({ params }: { params: { username: string } }) {
   const firestore = useFirestore();
-  const { user: currentUser, loading: loadingCurrentUser } = useUser();
+  const { user: currentUser, userProfile: currentUserProfile, loading: loadingCurrentUser } = useUser();
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loadingUser, setLoadingUser] = useState(true);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -83,6 +85,38 @@ export default function ProfilePage({ params }: { params: { username: string } }
 
   const isOwnProfile = !loadingCurrentUser && currentUser?.uid === user?.uid && !user?.uid.startsWith('sample-');
 
+  const isFollowing = useMemo(() => {
+    return currentUserProfile?.following?.includes(user?.uid ?? '') ?? false;
+  }, [currentUserProfile, user]);
+
+  const handleFollow = async () => {
+    if (!currentUser || !user) {
+      toast({ variant: 'destructive', title: 'Please log in to follow users.' });
+      return;
+    }
+    if (isOwnProfile) return;
+
+    const currentUserRef = doc(firestore, 'users', currentUser.uid);
+    const targetUserRef = doc(firestore, 'users', user.uid);
+
+    try {
+      if (isFollowing) {
+        // Unfollow
+        await updateDoc(currentUserRef, { following: arrayRemove(user.uid) });
+        await updateDoc(targetUserRef, { followers: arrayRemove(currentUser.uid) });
+        toast({ title: `Unfollowed ${user.name}` });
+      } else {
+        // Follow
+        await updateDoc(currentUserRef, { following: arrayUnion(user.uid) });
+        await updateDoc(targetUserRef, { followers: arrayUnion(currentUser.uid) });
+        toast({ title: `Followed ${user.name}` });
+      }
+    } catch (error) {
+      console.error('Error following user:', error);
+      toast({ variant: 'destructive', title: 'Error', description: 'Could not complete action.' });
+    }
+  };
+
   if (loadingUser) {
     return (
       <div className="flex justify-center items-center h-[60vh]">
@@ -97,10 +131,20 @@ export default function ProfilePage({ params }: { params: { username: string } }
   if (!user) {
     return null;
   }
+  
+  const SocialLink = ({ href, icon, children }: { href?: string, icon: React.ReactNode, children: React.ReactNode }) => {
+    if (!href) return null;
+    return (
+      <Link href={href} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 hover:text-primary">
+        {icon}
+        <span>{children}</span>
+      </Link>
+    )
+  }
 
   return (
     <div className="container py-8">
-      {isOwnProfile && (
+      {isOwnProfile && user && (
         <EditProfileDialog 
             userProfile={user}
             isOpen={isEditDialogOpen}
@@ -108,8 +152,8 @@ export default function ProfilePage({ params }: { params: { username: string } }
         />
       )}
       <Card className="mb-8 overflow-hidden">
-        <div className="h-48 bg-muted-foreground/20 relative">
-          <Image src="https://picsum.photos/seed/headerbg/1200/300" alt="Profile banner" fill style={{objectFit:"cover"}} data-ai-hint="abstract background" />
+        <div className="h-48 md:h-64 bg-muted-foreground/20 relative">
+          <Image src={user.headerUrl || "https://picsum.photos/seed/headerbg/1200/400"} alt="Profile banner" fill style={{objectFit:"cover"}} data-ai-hint="abstract background" />
         </div>
         <div className="p-6">
           <div className="flex flex-col md:flex-row items-start md:items-end -mt-20 relative z-10">
@@ -119,10 +163,20 @@ export default function ProfilePage({ params }: { params: { username: string } }
             </Avatar>
             <div className="mt-4 md:mt-0 md:ml-6 flex-grow">
               <h1 className="font-headline text-3xl font-bold">{user.name}</h1>
-              <div className="flex items-center space-x-4 text-muted-foreground mt-1">
-                <div className="flex items-center space-x-1">
-                  <MapPin className="h-4 w-4" />
-                  <span>{user.location || 'Location not set'}</span>
+              <p className="text-lg text-muted-foreground">@{user.username}</p>
+              {user.status && <p className="text-md font-semibold text-primary mt-1">{user.status}</p>}
+              <div className="flex items-center space-x-4 text-muted-foreground mt-2">
+                {user.location && (
+                    <div className="flex items-center space-x-1">
+                        <MapPin className="h-4 w-4" />
+                        <span>{user.location}</span>
+                    </div>
+                )}
+                 <div className="flex items-center space-x-1">
+                    <span><span className="font-bold text-foreground">{user.following?.length || 0}</span> Following</span>
+                </div>
+                 <div className="flex items-center space-x-1">
+                    <span><span className="font-bold text-foreground">{user.followers?.length || 0}</span> Followers</span>
                 </div>
               </div>
             </div>
@@ -131,9 +185,18 @@ export default function ProfilePage({ params }: { params: { username: string } }
                 <Button onClick={() => setIsEditDialogOpen(true)}>Edit Profile</Button>
               ) : (
                 <>
-                  <Button>
-                    <UserPlus className="h-4 w-4 mr-2" />
-                    Follow
+                  <Button onClick={handleFollow} variant={isFollowing ? 'secondary' : 'default'}>
+                    {isFollowing ? (
+                        <>
+                            <Check className="h-4 w-4 mr-2" />
+                            Following
+                        </>
+                    ) : (
+                        <>
+                            <UserPlus className="h-4 w-4 mr-2" />
+                            Follow
+                        </>
+                    )}
                   </Button>
                   <Button variant="outline">
                     <Mail className="h-4 w-4 mr-2" />
@@ -174,9 +237,19 @@ export default function ProfilePage({ params }: { params: { username: string } }
         </TabsContent>
         <TabsContent value="about">
           <Card>
-            <CardContent className="p-6">
-              <h2 className="font-headline text-xl font-semibold mb-4">About Me</h2>
-              <p className="text-foreground/80 leading-relaxed">{user.bio || 'This user has not written a bio yet.'}</p>
+            <CardContent className="p-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="md:col-span-2">
+                    <h2 className="font-headline text-xl font-semibold mb-4">About Me</h2>
+                    <p className="text-foreground/80 leading-relaxed whitespace-pre-wrap">{user.bio || 'This user has not written a bio yet.'}</p>
+                </div>
+                <div>
+                     <h2 className="font-headline text-xl font-semibold mb-4">On the web</h2>
+                     <div className="space-y-3 text-muted-foreground">
+                        <SocialLink href={user.socialLinks?.twitter} icon={<Twitter className="h-5 w-5" />}>Twitter</SocialLink>
+                        <SocialLink href={user.socialLinks?.instagram} icon={<Instagram className="h-5 w-5" />}>Instagram</SocialLink>
+                        <SocialLink href={user.socialLinks?.github} icon={<Github className="h-5 w-5" />}>GitHub</SocialLink>
+                     </div>
+                </div>
             </CardContent>
           </Card>
         </TabsContent>

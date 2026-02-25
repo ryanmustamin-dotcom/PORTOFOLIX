@@ -5,188 +5,90 @@
       "description": "Represents a user's public profile information.",
       "type": "object",
       "properties": {
-        "uid": {
-          "type": "string",
-          "description": "The user's unique ID."
+        "uid": { "type": "string", "description": "The user's unique ID." },
+        "email": { "type": "string", "format": "email", "description": "The user's email address." },
+        "name": { "type": "string", "description": "The user's full name." },
+        "username": { "type": "string", "description": "The user's public username." },
+        "avatarUrl": { "type": "string", "format": "uri", "description": "URL of the user's avatar image." },
+        "headerUrl": { "type": "string", "format": "uri", "description": "URL of the user's profile header image." },
+        "bio": { "type": "string", "description": "A short biography of the user." },
+        "location": { "type": "string", "description": "The user's location." },
+        "status": { "type": "string", "description": "The user's current status or job title." },
+        "socialLinks": {
+          "type": "object",
+          "properties": {
+            "twitter": { "type": "string", "format": "uri" },
+            "instagram": { "type": "string", "format": "uri" },
+            "github": { "type": "string", "format": "uri" }
+          }
         },
-        "email": {
-          "type": "string",
-          "format": "email",
-          "description": "The user's email address."
-        },
-        "name": {
-          "type": "string",
-          "description": "The user's full name."
-        },
-        "username": {
-          "type": "string",
-          "description": "The user's public username."
-        },
-        "avatarUrl": {
-          "type": "string",
-          "format": "uri",
-          "description": "URL of the user's avatar image."
-        },
-        "bio": {
-          "type": "string",
-          "description": "A short biography of the user."
-        },
-        "location": {
-          "type": "string",
-          "description": "The user's location."
-        }
+        "followers": { "type": "array", "items": { "type": "string" }, "description": "List of user UIDs that follow this user." },
+        "following": { "type": "array", "items": { "type": "string" }, "description": "List of user UIDs this user follows." }
       },
-      "required": [
-        "uid",
-        "email",
-        "name",
-        "username"
-      ]
+      "required": ["uid", "email", "name", "username"]
     },
     "Project": {
       "title": "Project",
       "description": "A user-created project.",
       "type": "object",
       "properties": {
-        "title": {
-          "type": "string"
-        },
-        "category": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "tags": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "keywords": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "thumbnailUrl": {
-          "type": "string",
-          "format": "uri"
-        },
-        "mediaUrls": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "format": "uri"
-          }
-        },
-        "likes": {
-          "type": "number"
-        },
-        "createdAt": {
-          "type": "string",
-          "format": "date-time"
-        },
+        "title": { "type": "string" },
+        "category": { "type": "string" },
+        "description": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "keywords": { "type": "array", "items": { "type": "string" } },
+        "thumbnailUrl": { "type": "string", "format": "uri" },
+        "mediaUrls": { "type": "array", "items": { "type": "string", "format": "uri" } },
+        "likes": { "type": "array", "items": { "type": "string" }, "description": "An array of user UIDs who have liked the project." },
+        "createdAt": { "type": "string", "format": "date-time" },
         "creator": {
           "type": "object",
           "properties": {
-            "uid": {
-              "type": "string"
-            },
-            "username": {
-              "type": "string"
-            },
-            "name": {
-              "type": "string"
-            },
-            "avatarUrl": {
-              "type": "string",
-              "format": "uri"
-            }
+            "uid": { "type": "string" },
+            "username": { "type": "string" },
+            "name": { "type": "string" },
+            "avatarUrl": { "type": "string", "format": "uri" }
           },
-          "required": [
-            "uid",
-            "username",
-            "name"
-          ]
+          "required": ["uid", "username", "name"]
         }
       },
-      "required": [
-        "title",
-        "category",
-        "description",
-        "thumbnailUrl",
-        "creator",
-        "createdAt",
-        "likes"
-      ]
+      "required": ["title", "category", "description", "thumbnailUrl", "creator", "createdAt", "likes"]
     },
     "Comment": {
       "title": "Comment",
       "description": "A comment on a project.",
       "type": "object",
       "properties": {
-        "text": {
-          "type": "string"
-        },
-        "createdAt": {
-          "type": "string",
-          "format": "date-time"
-        },
+        "text": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
         "author": {
           "type": "object",
           "properties": {
-            "uid": {
-              "type": "string"
-            },
-            "username": {
-              "type": "string"
-            },
-            "name": {
-              "type": "string"
-            },
-            "avatarUrl": {
-              "type": "string",
-              "format": "uri"
-            }
+            "uid": { "type": "string" },
+            "username": { "type": "string" },
+            "name": { "type": "string" },
+            "avatarUrl": { "type": "string", "format": "uri" }
           },
-          "required": [
-            "uid",
-            "username",
-            "name"
-          ]
+          "required": ["uid", "username", "name"]
         }
       },
-      "required": [
-        "text",
-        "createdAt",
-        "author"
-      ]
+      "required": ["text", "createdAt", "author"]
     }
   },
   "auth": {
-    "providers": [
-      "google.com",
-      "password"
-    ]
+    "providers": ["google.com", "password"]
   },
   "firestore": {
     "/users/{userId}": {
-      "schema": {
-        "$ref": "#/entities/UserProfile"
-      },
+      "schema": { "$ref": "#/entities/UserProfile" },
       "description": "Stores public user profile data, keyed by user ID."
     },
     "/projects/{projectId}": {
-      "schema": {
-        "$ref": "#/entities/Project"
-      },
+      "schema": { "$ref": "#/entities/Project" },
       "description": "Stores all user projects."
     },
     "/projects/{projectId}/comments/{commentId}": {
-      "schema": {
-        "$ref": "#/entities/Comment"
-      },
+      "schema": { "$ref": "#/entities/Comment" },
       "description": "Stores comments for a specific project."
     }
   }

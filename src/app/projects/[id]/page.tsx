@@ -4,8 +4,8 @@ import { useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { useDoc, useCollection, useFirestore } from '@/firebase';
-import { doc, collection, query, where, limit, orderBy } from 'firebase/firestore';
+import { useDoc, useCollection, useFirestore, useUser } from '@/firebase';
+import { doc, collection, query, where, limit, orderBy, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import type { Project, Comment } from '@/lib/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -15,9 +15,12 @@ import { Separator } from '@/components/ui/separator';
 import { Heart, MessageCircle, Send, UserPlus, Loader2 } from 'lucide-react';
 import ProjectCard from '@/components/project-card';
 import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
 
 export default function ProjectPage({ params }: { params: { id: string } }) {
   const firestore = useFirestore();
+  const { user } = useUser();
+  const { toast } = useToast();
 
   const projectRef = useMemo(() => {
     if (!firestore || !params.id) return null;
@@ -46,6 +49,35 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
   const { data: userProjectsData, loading: loadingUserProjects } = useCollection<Project>(userProjectsQuery);
 
   const userProjects = userProjectsData?.filter(p => p.id !== project?.id).slice(0, 3) || [];
+
+  const hasLiked = useMemo(() => {
+    if (!user || !project?.likes) return false;
+    return project.likes.includes(user.uid);
+  }, [user, project]);
+
+  const handleLike = async () => {
+    if (!user) {
+      toast({ variant: 'destructive', title: 'You must be logged in to like a project.' });
+      return;
+    }
+    if (!projectRef) return;
+
+    try {
+      if (hasLiked) {
+        await updateDoc(projectRef, {
+          likes: arrayRemove(user.uid)
+        });
+      } else {
+        await updateDoc(projectRef, {
+          likes: arrayUnion(user.uid)
+        });
+      }
+    } catch (error) {
+      console.error("Error liking project:", error);
+      toast({ variant: 'destructive', title: 'Error', description: 'Could not update like status.' });
+    }
+  };
+
 
   if (loadingProject) {
       return (
@@ -87,10 +119,10 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground mb-6">
-                <div className="flex items-center space-x-1">
-                  <Heart className="h-4 w-4 text-pink-500" fill="currentColor" />
-                  <span>{project.likes} Likes</span>
-                </div>
+                 <button onClick={handleLike} className="flex items-center space-x-1 focus:outline-none">
+                  <Heart className={`h-4 w-4 ${hasLiked ? 'text-pink-500 fill-current' : ''}`} />
+                  <span>{project.likes?.length || 0} Likes</span>
+                </button>
                 <div className="flex items-center space-x-1">
                   <MessageCircle className="h-4 w-4" />
                   <span>{comments?.length || 0} Comments</span>

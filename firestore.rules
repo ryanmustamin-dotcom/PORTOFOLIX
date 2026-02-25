@@ -9,7 +9,9 @@ service cloud.firestore {
     match /projects/{projectId} {
       allow read;
       allow create: if request.auth != null && request.resource.data.creator.uid == request.auth.uid;
-      allow update, delete: if request.auth != null && resource.data.creator.uid == request.auth.uid;
+      // Allow any logged in user to update likes, otherwise only creator can update
+      allow update: if request.auth != null && (resource.data.creator.uid == request.auth.uid || request.resource.data.likes != resource.data.likes);
+      allow delete: if request.auth != null && resource.data.creator.uid == request.auth.uid;
     }
     match /projects/{projectId}/comments/{commentId} {
       allow read;

@@ -55,8 +55,13 @@ export default function AuthPage() {
         email: user.email,
         username: signupEmail.split('@')[0], // simple username generation
         avatarUrl: user.photoURL || `https://picsum.photos/seed/${user.uid}/100/100`,
+        headerUrl: `https://picsum.photos/seed/header-${user.uid}/1200/300`,
         bio: '',
         location: '',
+        status: '',
+        socialLinks: {},
+        followers: [],
+        following: [],
       });
 
       toast({ title: 'Account created successfully!' });
@@ -89,9 +94,14 @@ export default function AuthPage() {
         name: user.displayName,
         email: user.email,
         username: user.email?.split('@')[0],
-        avatarUrl: user.photoURL,
+        avatarUrl: user.photoURL || `https://picsum.photos/seed/${user.uid}/100/100`,
+        headerUrl: `https://picsum.photos/seed/header-${user.uid}/1200/300`,
         bio: '',
         location: '',
+        status: '',
+        socialLinks: {},
+        followers: [],
+        following: [],
       }, { merge: true });
       
       toast({ title: 'Signed in with Google successfully!' });

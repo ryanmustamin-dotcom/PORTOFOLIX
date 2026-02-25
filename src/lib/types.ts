@@ -8,6 +8,15 @@ export type UserProfile = {
   avatarUrl: string | null;
   bio: string | null;
   location: string | null;
+  status?: string;
+  headerUrl?: string;
+  socialLinks?: {
+    twitter?: string;
+    instagram?: string;
+    github?: string;
+  };
+  followers?: string[];
+  following?: string[];
 };
 
 export type ProjectCreator = {
@@ -27,13 +36,13 @@ export type Comment = {
 };
 
 export type Project = {
-  id: string;
+  id:string;
   title: string;
   description: string;
   category: string;
   tags: string[];
   keywords: string[];
-  likes: number;
+  likes: string[];
   thumbnailUrl: string;
   mediaUrls: string[];
   creator: ProjectCreator;
