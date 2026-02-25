@@ -1,12 +1,26 @@
+'use client';
+
 import Link from 'next/link';
-import { Search, Upload, Palette } from 'lucide-react';
+import { Search, Upload, Palette, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useUser, useAuth } from '@/firebase';
+import { signOut } from 'firebase/auth';
+import { useRouter } from 'next/navigation';
 
 export default function Header() {
-  const isLoggedIn = true; // Mock login state
+  const { user, userProfile, loading } = useUser();
+  const auth = useAuth();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    router.push('/');
+  };
+
+  const isLoggedIn = !loading && user;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -36,34 +50,37 @@ export default function Header() {
                 <span className="hidden md:inline">Upload</span>
               </Button>
             </Link>
-            {isLoggedIn ? (
+            {isLoggedIn && userProfile ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src="https://picsum.photos/seed/avatar1/100/100" alt="User avatar" />
-                      <AvatarFallback>AG</AvatarFallback>
+                      <AvatarImage src={userProfile.avatarUrl ?? ''} alt={userProfile.name ?? 'User avatar'} />
+                      <AvatarFallback>{userProfile.name?.slice(0, 2).toUpperCase() || 'U'}</AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56" align="end" forceMount>
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">Elena Garcia</p>
+                      <p className="text-sm font-medium leading-none">{userProfile.name}</p>
                       <p className="text-xs leading-none text-muted-foreground">
-                        elenag@example.com
+                        {userProfile.email}
                       </p>
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href="/profile/elenag" className="w-full">Profile</Link>
+                    <Link href={`/profile/${userProfile.username}`} className="w-full">Profile</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     Settings
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>Log out</DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleLogout}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Log out
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
