@@ -9,7 +9,7 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center space-x-2">
             <Palette className="h-6 w-6 text-primary" />
-            <span className="font-bold font-headline text-lg">ArtSphere</span>
+            <span className="font-bold font-headline text-lg">PORTOFOLIX</span>
           </div>
           <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
             <Link href="#" className="hover:text-primary">About</Link>
@@ -18,7 +18,7 @@ export default function Footer() {
             <Link href="#" className="hover:text-primary">Privacy Policy</Link>
             <Link href="#" className="hover:text-primary">Terms of Service</Link>
           </nav>
-          <p className="text-sm text-muted-foreground">&copy; {currentYear} ArtSphere. All rights reserved.</p>
+          <p className="text-sm text-muted-foreground">&copy; {currentYear} PORTOFOLIX. All rights reserved.</p>
         </div>
       </div>
     </footer>

@@ -5,8 +5,8 @@ import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
 
 export const metadata: Metadata = {
-  title: 'ArtSphere',
-  description: 'A creative portfolio platform for artists and designers.',
+  title: 'PORTOFOLIX',
+  description: 'Show, Connect, Inspire.',
 };
 
 export default function RootLayout({

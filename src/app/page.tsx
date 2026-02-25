@@ -13,7 +13,7 @@ export default function Home() {
           Discover Amazing Artwork
         </h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-          Explore a universe of creativity from artists and designers around the world.
+          Show, Connect, Inspire.
         </p>
       </section>
 

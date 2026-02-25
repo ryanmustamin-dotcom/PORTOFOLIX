@@ -14,7 +14,7 @@ export default function Header() {
         <div className="mr-4 hidden md:flex">
           <Link href="/" className="mr-6 flex items-center space-x-2">
             <Palette className="h-6 w-6 text-primary" />
-            <span className="font-bold font-headline text-lg">ArtSphere</span>
+            <span className="font-bold font-headline text-lg">PORTOFOLIX</span>
           </Link>
           <nav className="flex items-center space-x-6 text-sm font-medium">
             <Link href="/" className="transition-colors hover:text-foreground/80 text-foreground">Discover</Link>
@@ -23,7 +23,7 @@ export default function Header() {
         <div className="flex flex-1 items-center justify-between gap-4">
             <Link href="/" className="flex items-center space-x-2 md:hidden">
               <Palette className="h-6 w-6 text-primary" />
-              <span className="font-bold font-headline text-lg">ArtSphere</span>
+              <span className="font-bold font-headline text-lg">PORTOFOLIX</span>
             </Link>
             <div className="relative flex-1 md:flex-none md:w-64 lg:w-96">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />

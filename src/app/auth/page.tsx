@@ -13,9 +13,9 @@ export default function AuthPage() {
         <div className="text-center mb-6">
             <Link href="/" className="inline-flex items-center space-x-2">
                 <Palette className="h-8 w-8 text-primary" />
-                <span className="font-bold font-headline text-3xl">ArtSphere</span>
+                <span className="font-bold font-headline text-3xl">PORTOFOLIX</span>
             </Link>
-            <p className="text-muted-foreground mt-2">Join the world's leading creative community.</p>
+            <p className="text-muted-foreground mt-2">Show, Connect, Inspire.</p>
         </div>
         <Tabs defaultValue="sign-in" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
