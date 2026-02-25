@@ -37,6 +37,5 @@ export type Project = {
   thumbnailUrl: string;
   mediaUrls: string[];
   creator: ProjectCreator;
-  comments: Comment[];
   createdAt: Timestamp;
 };

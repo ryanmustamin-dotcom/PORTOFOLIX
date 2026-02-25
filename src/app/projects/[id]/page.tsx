@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { useDoc, useCollection, useFirestore } from '@/firebase';
 import { doc, collection, query, where, limit, orderBy } from 'firebase/firestore';
-import type { Project } from '@/lib/types';
+import type { Project, Comment } from '@/lib/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -26,6 +26,13 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
 
   const { data: project, loading: loadingProject } = useDoc<Project>(projectRef);
   
+  const commentsQuery = useMemo(() => {
+    if (!firestore || !params.id) return null;
+    return query(collection(firestore, 'projects', params.id, 'comments'), orderBy('createdAt', 'desc'));
+  }, [firestore, params.id]);
+
+  const { data: comments, loading: loadingComments } = useCollection<Comment>(commentsQuery);
+
   const userProjectsQuery = useMemo(() => {
       if (!firestore || !project) return null;
       return query(
@@ -86,7 +93,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
                 </div>
                 <div className="flex items-center space-x-1">
                   <MessageCircle className="h-4 w-4" />
-                  <span>{project.comments?.length || 0} Comments</span>
+                  <span>{comments?.length || 0} Comments</span>
                 </div>
                 {project.createdAt && (
                     <span>Published on {project.createdAt.toDate().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
@@ -117,7 +124,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
 
           <Card>
             <CardContent className="p-6">
-              <h2 className="font-headline text-lg font-semibold mb-4">Comments ({project.comments?.length || 0})</h2>
+              <h2 className="font-headline text-lg font-semibold mb-4">Comments ({comments?.length || 0})</h2>
               <div className="flex space-x-4 mb-6">
                 <Avatar>
                   {/* Current user avatar logic needed here */}
@@ -131,7 +138,8 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
                 </div>
               </div>
               <div className="space-y-6">
-                {project.comments?.map(comment => (
+                {loadingComments && <Loader2 className="h-6 w-6 animate-spin" />}
+                {!loadingComments && comments?.map(comment => (
                   <div key={comment.id} className="flex space-x-4">
                     <Avatar>
                       <AvatarImage src={comment.author.avatarUrl || ''} alt={comment.author.name || ''} />

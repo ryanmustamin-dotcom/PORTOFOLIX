@@ -121,7 +121,6 @@ export default function UploadForm() {
                 name: userProfile.name,
                 avatarUrl: userProfile.avatarUrl,
             },
-            comments: [],
         };
         
         const docRef = await addDoc(collection(firestore, 'projects'), projectData);
