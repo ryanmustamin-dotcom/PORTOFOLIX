@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useMemo } from 'react';
@@ -8,6 +9,7 @@ import type { Project } from '@/lib/types';
 import ProjectCard from '@/components/project-card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { sampleProjects } from '@/lib/sample-data';
 
 export default function Home() {
   const firestore = useFirestore();
@@ -17,7 +19,11 @@ export default function Home() {
     return query(collection(firestore, 'projects'), orderBy('createdAt', 'desc'));
   }, [firestore]);
 
-  const { data: projects, loading } = useCollection<Project>(projectsQuery);
+  const { data: firestoreProjects, loading } = useCollection<Project>(projectsQuery);
+
+  const projects = (!loading && (!firestoreProjects || firestoreProjects.length === 0))
+    ? sampleProjects
+    : firestoreProjects;
 
   return (
     <div className="container py-8">
@@ -57,11 +63,13 @@ export default function Home() {
           ))}
         </div>
       )}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-        {projects?.map(project => (
-          <ProjectCard key={project.id} project={project} />
-        ))}
-      </div>
+      {!loading && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          {projects?.map(project => (
+            <ProjectCard key={project.id} project={project} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

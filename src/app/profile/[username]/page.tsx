@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
@@ -6,6 +7,7 @@ import Image from 'next/image';
 import { useFirestore, useUser, useCollection } from '@/firebase';
 import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
 import type { UserProfile, Project } from '@/lib/types';
+import { sampleUsers, sampleProjects } from '@/lib/sample-data';
 
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -24,24 +26,37 @@ export default function ProfilePage({ params }: { params: { username: string } }
 
   useEffect(() => {
     const fetchUser = async () => {
-      if (!firestore || !params.username) return;
+      if (!params.username) return;
       setLoadingUser(true);
       try {
-        const usersRef = collection(firestore, 'users');
-        const q = query(usersRef, where('username', '==', params.username));
-        
-        const querySnapshot = await getDocs(q);
-        
-        if (querySnapshot.empty) {
-          notFound();
-          return;
+        if (firestore) {
+            const usersRef = collection(firestore, 'users');
+            const q = query(usersRef, where('username', '==', params.username));
+            
+            const querySnapshot = await getDocs(q);
+            
+            if (!querySnapshot.empty) {
+              const userDoc = querySnapshot.docs[0];
+              setUser({...(userDoc.data() as UserProfile), uid: userDoc.id});
+              setLoadingUser(false);
+              return;
+            }
         }
         
-        const userDoc = querySnapshot.docs[0];
-        setUser({...(userDoc.data() as UserProfile), uid: userDoc.id});
+        const sampleUser = sampleUsers.find(u => u.username === params.username);
+        if (sampleUser) {
+          setUser(sampleUser);
+        } else {
+          notFound();
+        }
       } catch (error) {
         console.error("Error fetching user:", error);
-        notFound();
+        const sampleUser = sampleUsers.find(u => u.username === params.username);
+        if (sampleUser) {
+            setUser(sampleUser);
+        } else {
+            notFound();
+        }
       } finally {
         setLoadingUser(false);
       }
@@ -51,13 +66,22 @@ export default function ProfilePage({ params }: { params: { username: string } }
   }, [firestore, params.username]);
 
   const userProjectsQuery = useMemo(() => {
-    if (!firestore || !user) return null;
+    if (!firestore || !user || user.uid.startsWith('sample-')) return null;
     return query(collection(firestore, 'projects'), where('creator.uid', '==', user.uid), orderBy('createdAt', 'desc'));
   }, [firestore, user]);
 
-  const { data: userProjects, loading: loadingProjects } = useCollection<Project>(userProjectsQuery);
+  const { data: firestoreUserProjects, loading: loadingProjects } = useCollection<Project>(userProjectsQuery);
 
-  const isOwnProfile = !loadingCurrentUser && currentUser?.uid === user?.uid;
+  const userProjects = useMemo(() => {
+    if (user?.uid.startsWith('sample-')) {
+      return sampleProjects.filter(p => p.creator.uid === user.uid);
+    }
+    return firestoreUserProjects;
+  }, [user, firestoreUserProjects]);
+
+  const isLoadingProjects = user?.uid.startsWith('sample-') ? false : loadingProjects;
+
+  const isOwnProfile = !loadingCurrentUser && currentUser?.uid === user?.uid && !user?.uid.startsWith('sample-');
 
   if (loadingUser) {
     return (
@@ -128,19 +152,19 @@ export default function ProfilePage({ params }: { params: { username: string } }
           <TabsTrigger value="about">About</TabsTrigger>
         </TabsList>
         <TabsContent value="work">
-          {loadingProjects && (
+          {isLoadingProjects && (
             <div className="flex justify-center items-center py-16">
                  <Loader2 className="h-8 w-8 animate-spin" />
             </div>
           )}
-          {!loadingProjects && userProjects && userProjects.length > 0 ? (
+          {!isLoadingProjects && userProjects && userProjects.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
               {userProjects.map(project => (
                 <ProjectCard key={project.id} project={project} />
               ))}
             </div>
           ) : (
-            !loadingProjects && (
+            !isLoadingProjects && (
               <div className="text-center py-16 border-2 border-dashed rounded-lg">
                 <h3 className="text-xl font-semibold text-muted-foreground">No projects yet</h3>
                 <p className="text-muted-foreground mt-2">This user hasn't uploaded any projects.</p>
