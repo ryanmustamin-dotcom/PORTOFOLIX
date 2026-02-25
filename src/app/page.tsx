@@ -1,10 +1,23 @@
-import { getProjects, getCategories } from '@/lib/data';
+'use client';
+
+import { useMemo } from 'react';
+import { useCollection, useFirestore } from '@/firebase';
+import { collection, query, orderBy } from 'firebase/firestore';
+import { categories } from '@/lib/categories';
+import type { Project } from '@/lib/types';
 import ProjectCard from '@/components/project-card';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function Home() {
-  const projects = getProjects();
-  const categories = getCategories();
+  const firestore = useFirestore();
+
+  const projectsQuery = useMemo(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'projects'), orderBy('createdAt', 'desc'));
+  }, [firestore]);
+
+  const { data: projects, loading } = useCollection<Project>(projectsQuery);
 
   return (
     <div className="container py-8">
@@ -31,8 +44,21 @@ export default function Home() {
           </div>
       </div>
       
+      {loading && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          {Array.from({ length: 8 }).map((_, i) => (
+             <div key={i} className="space-y-4">
+                <Skeleton className="aspect-[4/3] w-full" />
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-4 w-1/2" />
+                </div>
+             </div>
+          ))}
+        </div>
+      )}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-        {projects.map(project => (
+        {projects?.map(project => (
           <ProjectCard key={project.id} project={project} />
         ))}
       </div>

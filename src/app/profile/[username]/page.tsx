@@ -1,12 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { useFirestore } from '@/firebase';
-import { collection, query, where, getDocs } from 'firebase/firestore';
-import { getProjectsByUser } from '@/lib/data';
-import type { UserProfile } from '@/lib/types';
+import { useFirestore, useUser, useCollection } from '@/firebase';
+import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
+import type { UserProfile, Project } from '@/lib/types';
 
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -14,16 +13,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ProjectCard from '@/components/project-card';
 import { Mail, MapPin, UserPlus, Loader2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+import EditProfileDialog from '@/components/edit-profile-dialog';
 
 export default function ProfilePage({ params }: { params: { username: string } }) {
   const firestore = useFirestore();
+  const { user: currentUser, loading: loadingCurrentUser } = useUser();
   const [user, setUser] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loadingUser, setLoadingUser] = useState(true);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
       if (!firestore || !params.username) return;
-      setLoading(true);
+      setLoadingUser(true);
       try {
         const usersRef = collection(firestore, 'users');
         const q = query(usersRef, where('username', '==', params.username));
@@ -36,22 +38,28 @@ export default function ProfilePage({ params }: { params: { username: string } }
         }
         
         const userDoc = querySnapshot.docs[0];
-        setUser(userDoc.data() as UserProfile);
+        setUser({...(userDoc.data() as UserProfile), uid: userDoc.id});
       } catch (error) {
         console.error("Error fetching user:", error);
-        // Optionally, you could set an error state here and display an error message
         notFound();
       } finally {
-        setLoading(false);
+        setLoadingUser(false);
       }
     };
 
     fetchUser();
   }, [firestore, params.username]);
 
-  const userProjects = user ? getProjectsByUser(user.username!) : [];
+  const userProjectsQuery = useMemo(() => {
+    if (!firestore || !user) return null;
+    return query(collection(firestore, 'projects'), where('creator.uid', '==', user.uid), orderBy('createdAt', 'desc'));
+  }, [firestore, user]);
 
-  if (loading) {
+  const { data: userProjects, loading: loadingProjects } = useCollection<Project>(userProjectsQuery);
+
+  const isOwnProfile = !loadingCurrentUser && currentUser?.uid === user?.uid;
+
+  if (loadingUser) {
     return (
       <div className="flex justify-center items-center h-[60vh]">
         <div className="text-center">
@@ -63,12 +71,18 @@ export default function ProfilePage({ params }: { params: { username: string } }
   }
 
   if (!user) {
-    // This will be caught by the notFound() call in useEffect
     return null;
   }
 
   return (
     <div className="container py-8">
+      {isOwnProfile && (
+        <EditProfileDialog 
+            userProfile={user}
+            isOpen={isEditDialogOpen}
+            onOpenChange={setIsEditDialogOpen}
+        />
+      )}
       <Card className="mb-8 overflow-hidden">
         <div className="h-48 bg-muted-foreground/20 relative">
           <Image src="https://picsum.photos/seed/headerbg/1200/300" alt="Profile banner" fill style={{objectFit:"cover"}} data-ai-hint="abstract background" />
@@ -89,14 +103,20 @@ export default function ProfilePage({ params }: { params: { username: string } }
               </div>
             </div>
             <div className="flex items-center space-x-2 mt-4 md:mt-0 self-start md:self-end shrink-0">
-              <Button>
-                <UserPlus className="h-4 w-4 mr-2" />
-                Follow
-              </Button>
-              <Button variant="outline">
-                <Mail className="h-4 w-4 mr-2" />
-                Message
-              </Button>
+              {isOwnProfile ? (
+                <Button onClick={() => setIsEditDialogOpen(true)}>Edit Profile</Button>
+              ) : (
+                <>
+                  <Button>
+                    <UserPlus className="h-4 w-4 mr-2" />
+                    Follow
+                  </Button>
+                  <Button variant="outline">
+                    <Mail className="h-4 w-4 mr-2" />
+                    Message
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -108,17 +128,24 @@ export default function ProfilePage({ params }: { params: { username: string } }
           <TabsTrigger value="about">About</TabsTrigger>
         </TabsList>
         <TabsContent value="work">
-          {userProjects.length > 0 ? (
+          {loadingProjects && (
+            <div className="flex justify-center items-center py-16">
+                 <Loader2 className="h-8 w-8 animate-spin" />
+            </div>
+          )}
+          {!loadingProjects && userProjects && userProjects.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
               {userProjects.map(project => (
                 <ProjectCard key={project.id} project={project} />
               ))}
             </div>
           ) : (
-            <div className="text-center py-16 border-2 border-dashed rounded-lg">
-              <h3 className="text-xl font-semibold text-muted-foreground">No projects yet</h3>
-              <p className="text-muted-foreground mt-2">This user hasn't uploaded any projects.</p>
-            </div>
+            !loadingProjects && (
+              <div className="text-center py-16 border-2 border-dashed rounded-lg">
+                <h3 className="text-xl font-semibold text-muted-foreground">No projects yet</h3>
+                <p className="text-muted-foreground mt-2">This user hasn't uploaded any projects.</p>
+              </div>
+            )
           )}
         </TabsContent>
         <TabsContent value="about">

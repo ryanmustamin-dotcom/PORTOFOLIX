@@ -1,24 +1,56 @@
+'use client';
+
+import { useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { getProjectById, getProjectsByUser } from '@/lib/data';
 import { notFound } from 'next/navigation';
+import { useDoc, useCollection, useFirestore } from '@/firebase';
+import { doc, collection, query, where, limit, orderBy } from 'firebase/firestore';
+import type { Project } from '@/lib/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { Heart, MessageCircle, Send, UserPlus } from 'lucide-react';
+import { Heart, MessageCircle, Send, UserPlus, Loader2 } from 'lucide-react';
 import ProjectCard from '@/components/project-card';
 import { Textarea } from '@/components/ui/textarea';
 
 export default function ProjectPage({ params }: { params: { id: string } }) {
-  const project = getProjectById(params.id);
+  const firestore = useFirestore();
+
+  const projectRef = useMemo(() => {
+    if (!firestore || !params.id) return null;
+    return doc(firestore, 'projects', params.id);
+  }, [firestore, params.id]);
+
+  const { data: project, loading: loadingProject } = useDoc<Project>(projectRef);
+  
+  const userProjectsQuery = useMemo(() => {
+      if (!firestore || !project) return null;
+      return query(
+          collection(firestore, 'projects'),
+          where('creator.uid', '==', project.creator.uid),
+          orderBy('createdAt', 'desc'),
+          limit(4) // Fetch 4 and filter out the current one
+      );
+  }, [firestore, project]);
+
+  const { data: userProjectsData, loading: loadingUserProjects } = useCollection<Project>(userProjectsQuery);
+
+  const userProjects = userProjectsData?.filter(p => p.id !== project?.id).slice(0, 3) || [];
+
+  if (loadingProject) {
+      return (
+        <div className="flex justify-center items-center h-[60vh]">
+            <Loader2 className="h-12 w-12 animate-spin" />
+        </div>
+      )
+  }
 
   if (!project) {
     notFound();
   }
-
-  const userProjects = getProjectsByUser(project.creator.username).filter(p => p.id !== project.id).slice(0, 3);
 
   return (
     <div className="container mx-auto py-10 px-4">
@@ -29,8 +61,8 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-4">
                 <Link href={`/profile/${project.creator.username}`} className="flex items-center space-x-3 group">
                   <Avatar>
-                    <AvatarImage src={project.creator.avatarUrl} alt={project.creator.name} />
-                    <AvatarFallback>{project.creator.name.charAt(0)}</AvatarFallback>
+                    <AvatarImage src={project.creator.avatarUrl || undefined} alt={project.creator.name || ''} />
+                    <AvatarFallback>{project.creator.name?.charAt(0)}</AvatarFallback>
                   </Avatar>
                   <div>
                     <h1 className="font-headline text-xl font-bold group-hover:text-primary">{project.title}</h1>
@@ -54,9 +86,11 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
                 </div>
                 <div className="flex items-center space-x-1">
                   <MessageCircle className="h-4 w-4" />
-                  <span>{project.comments.length} Comments</span>
+                  <span>{project.comments?.length || 0} Comments</span>
                 </div>
-                <span>Published on {project.publishedAt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                {project.createdAt && (
+                    <span>Published on {project.createdAt.toDate().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -83,10 +117,10 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
 
           <Card>
             <CardContent className="p-6">
-              <h2 className="font-headline text-lg font-semibold mb-4">Comments ({project.comments.length})</h2>
+              <h2 className="font-headline text-lg font-semibold mb-4">Comments ({project.comments?.length || 0})</h2>
               <div className="flex space-x-4 mb-6">
                 <Avatar>
-                  <AvatarImage src="https://picsum.photos/seed/avatar1/100/100" />
+                  {/* Current user avatar logic needed here */}
                   <AvatarFallback>U</AvatarFallback>
                 </Avatar>
                 <div className="flex-1 relative">
@@ -97,16 +131,16 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
                 </div>
               </div>
               <div className="space-y-6">
-                {project.comments.map(comment => (
+                {project.comments?.map(comment => (
                   <div key={comment.id} className="flex space-x-4">
                     <Avatar>
-                      <AvatarImage src={comment.user.avatarUrl} alt={comment.user.name} />
-                      <AvatarFallback>{comment.user.name.charAt(0)}</AvatarFallback>
+                      <AvatarImage src={comment.author.avatarUrl || ''} alt={comment.author.name || ''} />
+                      <AvatarFallback>{comment.author.name?.charAt(0)}</AvatarFallback>
                     </Avatar>
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
-                        <p className="font-semibold">{comment.user.name}</p>
-                        <p className="text-xs text-muted-foreground">{comment.timestamp.toLocaleDateString()}</p>
+                        <p className="font-semibold">{comment.author.name}</p>
+                        <p className="text-xs text-muted-foreground">{comment.createdAt.toDate().toLocaleDateString()}</p>
                       </div>
                       <p className="text-foreground/80 mt-1">{comment.text}</p>
                     </div>
@@ -123,15 +157,15 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
                 <CardContent className="p-4">
                   <Link href={`/profile/${project.creator.username}`} className="flex items-center space-x-3 mb-4 group">
                     <Avatar>
-                      <AvatarImage src={project.creator.avatarUrl} alt={project.creator.name} />
-                      <AvatarFallback>{project.creator.name.charAt(0)}</AvatarFallback>
+                      <AvatarImage src={project.creator.avatarUrl || ''} alt={project.creator.name || ''} />
+                      <AvatarFallback>{project.creator.name?.charAt(0)}</AvatarFallback>
                     </Avatar>
                     <div>
                       <p className="font-semibold group-hover:text-primary">{project.creator.name}</p>
-                      <p className="text-sm text-muted-foreground">{project.creator.location}</p>
+                      {/* Location is not in project.creator, would require another fetch */}
                     </div>
                   </Link>
-                  <p className="text-sm text-muted-foreground mb-4">{project.creator.bio}</p>
+                  {/* Bio is not in project.creator */}
                   <Button className="w-full">
                     <UserPlus className="h-4 w-4 mr-2" />
                     Follow

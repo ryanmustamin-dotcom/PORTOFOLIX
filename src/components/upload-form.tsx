@@ -5,6 +5,9 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Bot, File as FileIcon, Loader2, Sparkles, UploadCloud, X } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useUser, useFirestore } from '@/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 import { generateProjectDescription } from '@/lib/actions';
 import { Button } from '@/components/ui/button';
@@ -15,6 +18,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from './ui/badge';
+import { categories } from '@/lib/categories';
 
 const formSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters.'),
@@ -31,7 +35,11 @@ type FormValues = z.infer<typeof formSchema>;
 export default function UploadForm() {
   const { toast } = useToast();
   const [isAiLoading, setIsAiLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
+  const { user, userProfile } = useUser();
+  const firestore = useFirestore();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -87,12 +95,53 @@ export default function UploadForm() {
     setIsAiLoading(false);
   };
   
-  const onSubmit = (values: FormValues) => {
-    console.log(values);
-    toast({
-      title: "Project Submitted!",
-      description: "Your project is now live on your profile."
-    });
+  const onSubmit = async (values: FormValues) => {
+    if (!user || !userProfile) {
+        toast({ variant: 'destructive', title: 'Not authenticated', description: 'You must be logged in to upload a project.' });
+        return;
+    }
+    setIsSubmitting(true);
+    try {
+        const thumbnailUrl = `https://picsum.photos/seed/${new Date().getTime()}/600/400`;
+        const mediaUrls = Array.from(values.media).map((_, i) => `https://picsum.photos/seed/${new Date().getTime() + i}/1200/800`);
+
+        const projectData = {
+            title: values.title,
+            category: values.category,
+            description: values.descriptionDraft || values.briefDescription,
+            tags: values.suggestedTags || [],
+            keywords: values.suggestedKeywords || [],
+            thumbnailUrl,
+            mediaUrls,
+            likes: 0,
+            createdAt: serverTimestamp(),
+            creator: {
+                uid: user.uid,
+                username: userProfile.username,
+                name: userProfile.name,
+                avatarUrl: userProfile.avatarUrl,
+            },
+            comments: [],
+        };
+        
+        const docRef = await addDoc(collection(firestore, 'projects'), projectData);
+
+        toast({
+            title: "Project Submitted!",
+            description: "Your project is now live."
+        });
+        router.push(`/projects/${docRef.id}`);
+
+    } catch (error) {
+        console.error("Error submitting project:", error);
+        toast({
+            variant: 'destructive',
+            title: "Submission failed",
+            description: "There was an error submitting your project. Please try again."
+        });
+    } finally {
+        setIsSubmitting(false);
+    }
   };
 
   return (
@@ -188,11 +237,7 @@ export default function UploadForm() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="Digital Art">Digital Art</SelectItem>
-                      <SelectItem value="Photography">Photography</SelectItem>
-                      <SelectItem value="UI/UX">UI/UX</SelectItem>
-                      <SelectItem value="Branding">Branding</SelectItem>
-                      <SelectItem value="Illustration">Illustration</SelectItem>
+                      {categories.map(cat => <SelectItem key={cat} value={cat}>{cat}</SelectItem>)}
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -287,7 +332,10 @@ export default function UploadForm() {
         </Card>
 
         <div className="flex justify-end">
-          <Button type="submit" size="lg">Publish Project</Button>
+          <Button type="submit" size="lg" disabled={isSubmitting}>
+            {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+            {isSubmitting ? 'Publishing...' : 'Publish Project'}
+          </Button>
         </div>
       </form>
     </Form>

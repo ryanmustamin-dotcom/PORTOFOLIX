@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Heart } from 'lucide-react';
-import type { Project } from '@/lib/data';
+import type { Project } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
@@ -31,8 +31,8 @@ export default function ProjectCard({ project, className }: ProjectCardProps) {
               <h3 className="font-headline font-semibold truncate group-hover:text-primary">{project.title}</h3>
               <div className="flex items-center space-x-2 text-sm text-muted-foreground mt-1">
                 <Avatar className="h-5 w-5">
-                  <AvatarImage src={project.creator.avatarUrl} alt={project.creator.name} />
-                  <AvatarFallback>{project.creator.name.charAt(0)}</AvatarFallback>
+                  <AvatarImage src={project.creator.avatarUrl || undefined} alt={project.creator.name || ''} />
+                  <AvatarFallback>{project.creator.name?.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <span className="truncate">{project.creator.name}</span>
               </div>
