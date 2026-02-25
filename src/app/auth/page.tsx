@@ -33,6 +33,16 @@ export default function AuthPage() {
   const [signinEmail, setSigninEmail] = useState('');
   const [signinPassword, setSigninPassword] = useState('');
   
+  const handleAuthError = (error: any, title: string) => {
+    let description = error.message;
+    let errorTitle = title;
+    if (error.code === 'auth/invalid-api-key' || (error.message && error.message.includes('api-key-not-valid'))) {
+        errorTitle = 'Configuration Error';
+        description = "Invalid Firebase API Key. Please check your '.env' file and make sure you have entered the correct Firebase project credentials. You may need to restart your development server after updating the file.";
+    }
+    toast({ variant: 'destructive', title: errorTitle, description });
+  }
+
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -52,7 +62,7 @@ export default function AuthPage() {
       toast({ title: 'Account created successfully!' });
       router.push('/');
     } catch (error: any) {
-      toast({ variant: 'destructive', title: 'Sign up failed', description: error.message });
+      handleAuthError(error, 'Sign up failed');
     }
   };
 
@@ -63,7 +73,7 @@ export default function AuthPage() {
       toast({ title: 'Signed in successfully!' });
       router.push('/');
     } catch (error: any) {
-      toast({ variant: 'destructive', title: 'Sign in failed', description: error.message });
+      handleAuthError(error, 'Sign in failed');
     }
   };
 
@@ -87,7 +97,7 @@ export default function AuthPage() {
       toast({ title: 'Signed in with Google successfully!' });
       router.push('/');
     } catch (error: any) {
-      toast({ variant: 'destructive', title: 'Google sign in failed', description: error.message });
+      handleAuthError(error, 'Google sign in failed');
     }
   };
 
