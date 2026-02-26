@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useMemo, useState } from 'react';
@@ -12,9 +13,10 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { Heart, MessageCircle, Send, UserPlus, Loader2 } from 'lucide-react';
+import { Heart, MessageCircle, Send, UserPlus, Loader2, Check, Mail } from 'lucide-react';
 import ProjectCard from '@/components/project-card';
 import { Textarea } from '@/components/ui/textarea';
+import MessageDialog from '@/components/message-dialog';
 import { useToast } from '@/hooks/use-toast';
 
 export default function ProjectPage({ params }: { params: { id: string } }) {
@@ -23,6 +25,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
   const { toast } = useToast();
   const [commentText, setCommentText] = useState('');
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
+  const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
 
   const projectRef = useMemo(() => {
     if (!firestore || !params.id) return null;
@@ -57,6 +60,11 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
     return project.likes.includes(user.uid);
   }, [user, project]);
 
+  const isFollowing = useMemo(() => {
+    if (!userProfile || !project) return false;
+    return userProfile.following?.includes(project.creator.uid) ?? false;
+  }, [userProfile, project]);
+
   const handleLike = async () => {
     if (!user) {
       toast({ variant: 'destructive', title: 'Anda harus masuk untuk memberikan suka.' });
@@ -66,17 +74,39 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
 
     try {
       if (hasLiked) {
-        await updateDoc(projectRef, {
-          likes: arrayRemove(user.uid)
-        });
+        await updateDoc(projectRef, { likes: arrayRemove(user.uid) });
       } else {
-        await updateDoc(projectRef, {
-          likes: arrayUnion(user.uid)
-        });
+        await updateDoc(projectRef, { likes: arrayUnion(user.uid) });
       }
     } catch (error) {
       console.error("Error liking project:", error);
       toast({ variant: 'destructive', title: 'Error', description: 'Gagal memperbarui status suka.' });
+    }
+  };
+
+  const handleFollow = async () => {
+    if (!user || !project) {
+      toast({ variant: 'destructive', title: 'Silakan masuk untuk mengikuti kreator.' });
+      return;
+    }
+    if (user.uid === project.creator.uid) return;
+
+    const currentUserRef = doc(firestore, 'users', user.uid);
+    const targetUserRef = doc(firestore, 'users', project.creator.uid);
+
+    try {
+      if (isFollowing) {
+        await updateDoc(currentUserRef, { following: arrayRemove(project.creator.uid) });
+        await updateDoc(targetUserRef, { followers: arrayRemove(user.uid) });
+        toast({ title: `Berhenti mengikuti ${project.creator.name}` });
+      } else {
+        await updateDoc(currentUserRef, { following: arrayUnion(project.creator.uid) });
+        await updateDoc(targetUserRef, { followers: arrayUnion(user.uid) });
+        toast({ title: `Berhasil mengikuti ${project.creator.name}` });
+      }
+    } catch (error) {
+      console.error('Error following user:', error);
+      toast({ variant: 'destructive', title: 'Gagal melakukan aksi ini.' });
     }
   };
 
@@ -119,131 +149,147 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
       )
   }
 
-  if (!project) {
-    notFound();
-  }
+  if (!project) notFound();
 
   return (
     <div className="container mx-auto py-10 px-4">
+      <MessageDialog 
+        receiverUid={project.creator.uid}
+        receiverName={project.creator.name || ''}
+        isOpen={isMessageDialogOpen}
+        onOpenChange={setIsMessageDialogOpen}
+      />
+
       <div className="grid grid-cols-12 gap-8">
         <div className="col-span-12 lg:col-span-9">
-          <Card className="mb-8">
+          <Card className="mb-8 border-none shadow-md bg-white">
             <CardContent className="p-6">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-4">
                 <Link href={`/profile/${project.creator.username}`} className="flex items-center space-x-3 group">
-                  <Avatar>
+                  <Avatar className="h-12 w-12 border-2 border-primary/10">
                     <AvatarImage src={project.creator.avatarUrl || undefined} alt={project.creator.name || ''} />
                     <AvatarFallback>{project.creator.name?.charAt(0)}</AvatarFallback>
                   </Avatar>
                   <div>
-                    <h1 className="font-headline text-xl font-bold group-hover:text-primary">{project.title}</h1>
-                    <p className="text-sm text-muted-foreground">{project.creator.name}</p>
+                    <h1 className="font-headline text-xl font-bold group-hover:text-primary transition-colors">{project.title}</h1>
+                    <p className="text-sm text-muted-foreground">Oleh {project.creator.name}</p>
                   </div>
                 </Link>
-                <div className="flex items-center space-x-2 shrink-0">
-                  <Button variant="outline" size="sm">
-                    <UserPlus className="h-4 w-4 mr-2" />
-                    Ikuti
-                  </Button>
-                  <Button variant="default" size="sm">
-                    Hubungi
-                  </Button>
-                </div>
+                {user?.uid !== project.creator.uid && (
+                  <div className="flex items-center space-x-2 shrink-0">
+                    <Button onClick={handleFollow} variant={isFollowing ? 'secondary' : 'outline'} size="sm" className="rounded-full px-4">
+                      {isFollowing ? <Check className="h-4 w-4 mr-2" /> : <UserPlus className="h-4 w-4 mr-2" />}
+                      {isFollowing ? 'Diikuti' : 'Ikuti'}
+                    </Button>
+                    <Button onClick={() => setIsMessageDialogOpen(true)} variant="default" size="sm" className="rounded-full px-4 shadow-lg shadow-primary/20">
+                      <Mail className="h-4 w-4 mr-2" />
+                      Pesan
+                    </Button>
+                  </div>
+                )}
               </div>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground mb-6">
-                 <button onClick={handleLike} className="flex items-center space-x-1 group focus:outline-none">
+                 <button onClick={handleLike} className="flex items-center space-x-1 group focus:outline-none bg-muted/30 px-3 py-1.5 rounded-full hover:bg-muted/50 transition-colors">
                   <Heart className={`h-5 w-5 transition-colors ${hasLiked ? 'text-red-500 fill-current' : 'group-hover:text-red-400'}`} />
                   <span className={hasLiked ? 'text-foreground font-bold' : ''}>{project.likes?.length || 0} Suka</span>
                 </button>
-                <div className="flex items-center space-x-1">
+                <div className="flex items-center space-x-1 bg-muted/30 px-3 py-1.5 rounded-full">
                   <MessageCircle className="h-5 w-5" />
                   <span>{comments?.length || 0} Komentar</span>
                 </div>
                 {project.createdAt && (
-                    <span className="hidden sm:inline">• Diterbitkan pada {project.createdAt.toDate().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                    <span className="hidden sm:inline bg-muted/30 px-3 py-1.5 rounded-full">• Diterbitkan {project.createdAt.toDate().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                 )}
               </div>
             </CardContent>
           </Card>
           
-          <div className="space-y-4">
+          <div className="space-y-6">
             {project.mediaUrls.map((url, index) => (
-              <div key={index} className="relative aspect-video w-full overflow-hidden rounded-lg bg-card border shadow-sm">
-                <Image src={url} alt={`${project.title} media ${index + 1}`} fill className="object-contain" data-ai-hint="project media" />
+              <div key={index} className="relative aspect-video w-full overflow-hidden rounded-3xl bg-card border shadow-xl">
+                <Image src={url} alt={`${project.title} media ${index + 1}`} fill className="object-cover" data-ai-hint="project media" />
               </div>
             ))}
           </div>
 
-          <Card className="my-8">
-            <CardContent className="p-6">
+          <Card className="my-8 border-none shadow-md bg-white">
+            <CardContent className="p-8">
               <h2 className="font-headline text-lg font-semibold mb-4 text-primary">Deskripsi</h2>
-              <p className="text-foreground/80 leading-relaxed whitespace-pre-wrap">{project.description}</p>
-              <Separator className="my-6" />
+              <p className="text-foreground/80 text-lg leading-relaxed whitespace-pre-wrap">{project.description}</p>
+              <Separator className="my-8" />
               <div className="flex flex-wrap gap-2">
                 {project.tags.map(tag => (
-                  <Badge key={tag} variant="secondary" className="hover:bg-primary hover:text-white cursor-default transition-colors">{tag}</Badge>
+                  <Badge key={tag} variant="secondary" className="px-4 py-1 rounded-full hover:bg-primary hover:text-white transition-colors cursor-default">#{tag}</Badge>
                 ))}
               </div>
             </CardContent>
           </Card>
 
-          <Card id="comments">
-            <CardContent className="p-6">
-              <h2 className="font-headline text-lg font-semibold mb-6">Diskusi ({comments?.length || 0})</h2>
+          <Card id="comments" className="border-none shadow-md bg-white overflow-hidden">
+            <div className="h-1.5 w-full bg-primary/10" />
+            <CardContent className="p-8">
+              <h2 className="font-headline text-xl font-semibold mb-8">Diskusi ({comments?.length || 0})</h2>
               
               {user ? (
-                <div className="flex space-x-4 mb-8">
-                  <Avatar>
+                <div className="flex space-x-4 mb-10">
+                  <Avatar className="h-12 w-12 border-2 border-primary/10">
                     <AvatarImage src={userProfile?.avatarUrl || ''} />
                     <AvatarFallback>{userProfile?.name?.charAt(0)}</AvatarFallback>
                   </Avatar>
                   <div className="flex-1 relative">
                     <Textarea 
-                      placeholder="Apa pendapat Anda tentang karya ini?" 
-                      className="pr-12 min-h-[100px] resize-none" 
+                      placeholder="Bagikan pendapat Anda tentang karya ini..." 
+                      className="pr-12 min-h-[120px] resize-none rounded-2xl bg-muted/20 border-none focus:ring-2 focus:ring-primary/20 text-md" 
                       value={commentText}
                       onChange={(e) => setCommentText(e.target.value)}
                     />
                     <Button 
                       onClick={handleAddComment}
                       disabled={isSubmittingComment || !commentText.trim()}
-                      variant="ghost" 
+                      variant="default" 
                       size="icon" 
-                      className="absolute right-2 bottom-2 h-8 w-8 text-primary hover:bg-primary/10"
+                      className="absolute right-3 bottom-3 h-10 w-10 rounded-full shadow-lg shadow-primary/20"
                     >
-                      {isSubmittingComment ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                      {isSubmittingComment ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
                     </Button>
                   </div>
                 </div>
               ) : (
-                <div className="bg-muted/50 rounded-lg p-4 text-center mb-8">
-                  <p className="text-sm text-muted-foreground">Silakan <Link href="/auth" className="text-primary font-bold hover:underline">Masuk</Link> untuk ikut berdiskusi.</p>
+                <div className="bg-primary/5 border border-primary/10 rounded-3xl p-6 text-center mb-10">
+                  <p className="text-muted-foreground">Silakan <Link href="/auth" className="text-primary font-bold hover:underline">Masuk</Link> untuk ikut berdiskusi dengan kreator.</p>
                 </div>
               )}
 
-              <div className="space-y-6">
-                {loadingComments && <Loader2 className="h-6 w-6 animate-spin text-primary" />}
+              <div className="space-y-8">
+                {loadingComments && (
+                  <div className="flex justify-center py-4">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                  </div>
+                )}
                 {!loadingComments && comments?.map(comment => (
-                  <div key={comment.id} className="flex space-x-4 group animate-in fade-in slide-in-from-top-2">
+                  <div key={comment.id} className="flex space-x-4 group animate-in fade-in slide-in-from-top-4">
                     <Link href={`/profile/${comment.author.username}`}>
-                      <Avatar className="h-10 w-10">
+                      <Avatar className="h-10 w-10 border border-primary/10">
                         <AvatarImage src={comment.author.avatarUrl || ''} alt={comment.author.name || ''} />
                         <AvatarFallback>{comment.author.name?.charAt(0)}</AvatarFallback>
                       </Avatar>
                     </Link>
-                    <div className="flex-1 bg-muted/30 p-4 rounded-xl">
-                      <div className="flex items-center justify-between mb-1">
-                        <Link href={`/profile/${comment.author.username}`} className="font-semibold hover:text-primary transition-colors">{comment.author.name}</Link>
-                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
+                    <div className="flex-1 bg-muted/20 p-5 rounded-2xl group-hover:bg-muted/30 transition-colors">
+                      <div className="flex items-center justify-between mb-2">
+                        <Link href={`/profile/${comment.author.username}`} className="font-bold hover:text-primary transition-colors">{comment.author.name}</Link>
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">
                           {comment.createdAt?.toDate().toLocaleDateString('id-ID')}
                         </p>
                       </div>
-                      <p className="text-foreground/80 text-sm leading-relaxed">{comment.text}</p>
+                      <p className="text-foreground/80 text-md leading-relaxed">{comment.text}</p>
                     </div>
                   </div>
                 ))}
                 {!loadingComments && comments?.length === 0 && (
-                  <p className="text-center text-muted-foreground py-4 italic text-sm">Belum ada komentar. Jadilah yang pertama!</p>
+                  <div className="text-center py-12">
+                    <MessageCircle className="h-12 w-12 text-muted-foreground/30 mx-auto mb-4" />
+                    <p className="text-muted-foreground italic">Belum ada komentar. Jadilah yang pertama memberikan apresiasi!</p>
+                  </div>
                 )}
               </div>
             </CardContent>
@@ -252,31 +298,34 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
         
         <div className="col-span-12 lg:col-span-3">
           <div className="sticky top-24 space-y-6">
-             <Card className="overflow-hidden border-primary/10">
+             <Card className="overflow-hidden border-none shadow-lg bg-white rounded-3xl">
                 <div className="h-2 w-full bg-primary" />
                 <CardContent className="p-6">
-                  <Link href={`/profile/${project.creator.username}`} className="flex flex-col items-center text-center group mb-4">
-                    <Avatar className="h-20 w-20 mb-3 border-2 border-primary/20 transition-transform group-hover:scale-105">
+                  <Link href={`/profile/${project.creator.username}`} className="flex flex-col items-center text-center group mb-6">
+                    <Avatar className="h-24 w-24 mb-4 border-2 border-primary/20 transition-transform group-hover:scale-105 shadow-md">
                       <AvatarImage src={project.creator.avatarUrl || ''} alt={project.creator.name || ''} />
-                      <AvatarFallback className="text-xl">{project.creator.name?.charAt(0)}</AvatarFallback>
+                      <AvatarFallback className="text-2xl">{project.creator.name?.charAt(0)}</AvatarFallback>
                     </Avatar>
-                    <p className="font-headline font-bold text-lg group-hover:text-primary transition-colors">{project.creator.name}</p>
+                    <p className="font-headline font-bold text-xl group-hover:text-primary transition-colors">{project.creator.name}</p>
                     <p className="text-sm text-muted-foreground">@{project.creator.username}</p>
                   </Link>
-                  <Button className="w-full mb-2 shadow-lg shadow-primary/20">
-                    <UserPlus className="h-4 w-4 mr-2" />
-                    Ikuti
-                  </Button>
-                  <Button variant="outline" className="w-full">
-                    Kirim Pesan
-                  </Button>
+                  {user?.uid !== project.creator.uid && (
+                    <div className="space-y-3">
+                      <Button onClick={handleFollow} variant={isFollowing ? 'secondary' : 'default'} className="w-full rounded-full shadow-lg shadow-primary/10 py-6 text-md font-bold">
+                        {isFollowing ? <><Check className="h-4 w-4 mr-2" /> Diikuti</> : <><UserPlus className="h-4 w-4 mr-2" /> Ikuti Kreator</>}
+                      </Button>
+                      <Button onClick={() => setIsMessageDialogOpen(true)} variant="outline" className="w-full rounded-full py-6 text-md border-primary/20 hover:bg-primary/5">
+                        Kirim Pesan
+                      </Button>
+                    </div>
+                  )}
                 </CardContent>
             </Card>
             
             {userProjects.length > 0 && (
                 <div>
-                    <h3 className="font-headline font-semibold mb-4 text-sm text-primary">Karya Lainnya</h3>
-                    <div className="grid grid-cols-1 gap-4">
+                    <h3 className="font-headline font-bold mb-4 text-xs text-primary tracking-widest uppercase">Karya Lainnya dari Kreator</h3>
+                    <div className="grid grid-cols-1 gap-6">
                         {userProjects.map(p => <ProjectCard key={p.id} project={p} className="h-auto" />)}
                     </div>
                 </div>

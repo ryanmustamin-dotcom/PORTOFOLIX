@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
@@ -15,6 +16,7 @@ import ProjectCard from '@/components/project-card';
 import { Mail, MapPin, UserPlus, Loader2, Check, Twitter, Instagram, Github } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import EditProfileDialog from '@/components/edit-profile-dialog';
+import MessageDialog from '@/components/message-dialog';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 
@@ -24,6 +26,7 @@ export default function ProfilePage({ params }: { params: { username: string } }
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loadingUser, setLoadingUser] = useState(true);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -78,7 +81,7 @@ export default function ProfilePage({ params }: { params: { username: string } }
     if (user?.uid.startsWith('sample-')) {
       return sampleProjects.filter(p => p.creator.uid === user.uid);
     }
-    return firestoreUserProjects;
+    return firestoreUserProjects || [];
   }, [user, firestoreUserProjects]);
 
   const isLoadingProjects = user?.uid.startsWith('sample-') ? false : loadingProjects;
@@ -91,7 +94,7 @@ export default function ProfilePage({ params }: { params: { username: string } }
 
   const handleFollow = async () => {
     if (!currentUser || !user) {
-      toast({ variant: 'destructive', title: 'Please log in to follow users.' });
+      toast({ variant: 'destructive', title: 'Silakan masuk untuk mengikuti pengguna.' });
       return;
     }
     if (isOwnProfile) return;
@@ -104,16 +107,16 @@ export default function ProfilePage({ params }: { params: { username: string } }
         // Unfollow
         await updateDoc(currentUserRef, { following: arrayRemove(user.uid) });
         await updateDoc(targetUserRef, { followers: arrayRemove(currentUser.uid) });
-        toast({ title: `Unfollowed ${user.name}` });
+        toast({ title: `Berhenti mengikuti ${user.name}` });
       } else {
         // Follow
         await updateDoc(currentUserRef, { following: arrayUnion(user.uid) });
         await updateDoc(targetUserRef, { followers: arrayUnion(currentUser.uid) });
-        toast({ title: `Followed ${user.name}` });
+        toast({ title: `Berhasil mengikuti ${user.name}` });
       }
     } catch (error) {
       console.error('Error following user:', error);
-      toast({ variant: 'destructive', title: 'Error', description: 'Could not complete action.' });
+      toast({ variant: 'destructive', title: 'Gagal melakukan aksi ini.' });
     }
   };
 
@@ -121,21 +124,19 @@ export default function ProfilePage({ params }: { params: { username: string } }
     return (
       <div className="flex justify-center items-center h-[60vh]">
         <div className="text-center">
-          <Loader2 className="h-12 w-12 animate-spin inline-block mb-4" />
-          <p className="text-lg text-muted-foreground">Loading Profile...</p>
+          <Loader2 className="h-12 w-12 animate-spin text-primary inline-block mb-4" />
+          <p className="text-lg text-muted-foreground">Memuat Profil...</p>
         </div>
       </div>
     );
   }
 
-  if (!user) {
-    return null;
-  }
+  if (!user) return null;
   
   const SocialLink = ({ href, icon, children }: { href?: string, icon: React.ReactNode, children: React.ReactNode }) => {
     if (!href) return null;
     return (
-      <Link href={href} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 hover:text-primary">
+      <Link href={href} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 hover:text-primary transition-colors">
         {icon}
         <span>{children}</span>
       </Link>
@@ -151,15 +152,25 @@ export default function ProfilePage({ params }: { params: { username: string } }
             onOpenChange={setIsEditDialogOpen}
         />
       )}
-      <Card className="mb-8 overflow-hidden">
-        <div className="h-48 md:h-64 bg-muted-foreground/20 relative">
-          <Image src={user.headerUrl || "https://picsum.photos/seed/headerbg/1200/400"} alt="Profile banner" fill style={{objectFit:"cover"}} data-ai-hint="abstract background" />
+      
+      {user && (
+        <MessageDialog 
+          receiverUid={user.uid}
+          receiverName={user.name || ''}
+          isOpen={isMessageDialogOpen}
+          onOpenChange={setIsMessageDialogOpen}
+        />
+      )}
+
+      <Card className="mb-8 overflow-hidden border-none shadow-xl bg-white">
+        <div className="h-48 md:h-64 bg-muted relative">
+          <Image src={user.headerUrl || "https://picsum.photos/seed/headerbg/1200/400"} alt="Profile banner" fill className="object-cover" data-ai-hint="abstract background" />
         </div>
         <div className="p-6">
-          <div className="flex flex-col md:flex-row items-start md:items-end -mt-20 relative z-10">
-            <Avatar className="h-32 w-32 border-4 border-background shrink-0">
+          <div className="flex flex-col md:flex-row items-start md:items-end -mt-24 relative z-10">
+            <Avatar className="h-36 w-36 border-4 border-white shadow-lg shrink-0">
               <AvatarImage src={user.avatarUrl ?? undefined} alt={user.name ?? ''} />
-              <AvatarFallback>{user.name?.slice(0, 2).toUpperCase() ?? '??'}</AvatarFallback>
+              <AvatarFallback className="text-2xl">{user.name?.slice(0, 2).toUpperCase() ?? '??'}</AvatarFallback>
             </Avatar>
             <div className="mt-4 md:mt-0 md:ml-6 flex-grow">
               <h1 className="font-headline text-3xl font-bold">{user.name}</h1>
@@ -173,34 +184,28 @@ export default function ProfilePage({ params }: { params: { username: string } }
                     </div>
                 )}
                  <div className="flex items-center space-x-1">
-                    <span><span className="font-bold text-foreground">{user.following?.length || 0}</span> Following</span>
+                    <span><span className="font-bold text-foreground">{user.following?.length || 0}</span> Mengikuti</span>
                 </div>
                  <div className="flex items-center space-x-1">
-                    <span><span className="font-bold text-foreground">{user.followers?.length || 0}</span> Followers</span>
+                    <span><span className="font-bold text-foreground">{user.followers?.length || 0}</span> Pengikut</span>
                 </div>
               </div>
             </div>
             <div className="flex items-center space-x-2 mt-4 md:mt-0 self-start md:self-end shrink-0">
               {isOwnProfile ? (
-                <Button onClick={() => setIsEditDialogOpen(true)}>Edit Profile</Button>
+                <Button onClick={() => setIsEditDialogOpen(true)} className="rounded-full px-6">Edit Profil</Button>
               ) : (
                 <>
-                  <Button onClick={handleFollow} variant={isFollowing ? 'secondary' : 'default'}>
+                  <Button onClick={handleFollow} variant={isFollowing ? 'secondary' : 'default'} className="rounded-full px-6">
                     {isFollowing ? (
-                        <>
-                            <Check className="h-4 w-4 mr-2" />
-                            Following
-                        </>
+                        <><Check className="h-4 w-4 mr-2" /> Mengikuti</>
                     ) : (
-                        <>
-                            <UserPlus className="h-4 w-4 mr-2" />
-                            Follow
-                        </>
+                        <><UserPlus className="h-4 w-4 mr-2" /> Ikuti</>
                     )}
                   </Button>
-                  <Button variant="outline">
+                  <Button variant="outline" className="rounded-full px-6" onClick={() => setIsMessageDialogOpen(true)}>
                     <Mail className="h-4 w-4 mr-2" />
-                    Message
+                    Pesan
                   </Button>
                 </>
               )}
@@ -210,14 +215,14 @@ export default function ProfilePage({ params }: { params: { username: string } }
       </Card>
       
       <Tabs defaultValue="work" className="w-full">
-        <TabsList className="mb-6">
-          <TabsTrigger value="work">Work</TabsTrigger>
-          <TabsTrigger value="about">About</TabsTrigger>
+        <TabsList className="mb-6 bg-muted/50 p-1 rounded-full w-fit">
+          <TabsTrigger value="work" className="rounded-full px-8">Karya</TabsTrigger>
+          <TabsTrigger value="about" className="rounded-full px-8">Tentang</TabsTrigger>
         </TabsList>
         <TabsContent value="work">
           {isLoadingProjects && (
             <div className="flex justify-center items-center py-16">
-                 <Loader2 className="h-8 w-8 animate-spin" />
+                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
           )}
           {!isLoadingProjects && userProjects && userProjects.length > 0 ? (
@@ -228,26 +233,29 @@ export default function ProfilePage({ params }: { params: { username: string } }
             </div>
           ) : (
             !isLoadingProjects && (
-              <div className="text-center py-16 border-2 border-dashed rounded-lg">
-                <h3 className="text-xl font-semibold text-muted-foreground">No projects yet</h3>
-                <p className="text-muted-foreground mt-2">This user hasn't uploaded any projects.</p>
+              <div className="text-center py-24 border-2 border-dashed rounded-3xl bg-muted/5">
+                <h3 className="text-xl font-semibold text-muted-foreground font-headline">Belum ada karya</h3>
+                <p className="text-muted-foreground mt-2">Kreator ini belum mengunggah proyek apapun.</p>
               </div>
             )
           )}
         </TabsContent>
         <TabsContent value="about">
-          <Card>
-            <CardContent className="p-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+          <Card className="border-none shadow-lg">
+            <CardContent className="p-8 grid grid-cols-1 md:grid-cols-3 gap-12">
                 <div className="md:col-span-2">
-                    <h2 className="font-headline text-xl font-semibold mb-4">About Me</h2>
-                    <p className="text-foreground/80 leading-relaxed whitespace-pre-wrap">{user.bio || 'This user has not written a bio yet.'}</p>
+                    <h2 className="font-headline text-xl font-semibold mb-4 text-primary">Biografi</h2>
+                    <p className="text-foreground/80 leading-relaxed whitespace-pre-wrap">{user.bio || 'Pengguna ini belum menulis biografi.'}</p>
                 </div>
                 <div>
-                     <h2 className="font-headline text-xl font-semibold mb-4">On the web</h2>
-                     <div className="space-y-3 text-muted-foreground">
+                     <h2 className="font-headline text-xl font-semibold mb-4 text-primary">Tautan Sosial</h2>
+                     <div className="space-y-4 text-muted-foreground">
                         <SocialLink href={user.socialLinks?.twitter} icon={<Twitter className="h-5 w-5" />}>Twitter</SocialLink>
                         <SocialLink href={user.socialLinks?.instagram} icon={<Instagram className="h-5 w-5" />}>Instagram</SocialLink>
                         <SocialLink href={user.socialLinks?.github} icon={<Github className="h-5 w-5" />}>GitHub</SocialLink>
+                        {!user.socialLinks?.twitter && !user.socialLinks?.instagram && !user.socialLinks?.github && (
+                          <p className="italic text-sm">Tidak ada tautan tersedia.</p>
+                        )}
                      </div>
                 </div>
             </CardContent>

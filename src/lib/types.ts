@@ -1,3 +1,4 @@
+
 import { type FieldValue, type Timestamp } from "firebase/firestore";
 
 export type UserProfile = {
@@ -46,5 +47,13 @@ export type Project = {
   thumbnailUrl: string;
   mediaUrls: string[];
   creator: ProjectCreator;
+  createdAt: Timestamp;
+};
+
+export type Message = {
+  id: string;
+  senderUid: string;
+  receiverUid: string;
+  text: string;
   createdAt: Timestamp;
 };

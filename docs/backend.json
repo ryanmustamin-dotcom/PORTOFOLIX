@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "UserProfile": {
@@ -73,6 +74,18 @@
         }
       },
       "required": ["text", "createdAt", "author"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "A direct message between users.",
+      "type": "object",
+      "properties": {
+        "senderUid": { "type": "string" },
+        "receiverUid": { "type": "string" },
+        "text": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["senderUid", "receiverUid", "text", "createdAt"]
     }
   },
   "auth": {
@@ -90,6 +103,10 @@
     "/projects/{projectId}/comments/{commentId}": {
       "schema": { "$ref": "#/entities/Comment" },
       "description": "Stores comments for a specific project."
+    },
+    "/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/Message" },
+      "description": "Stores direct messages between users."
     }
   }
 }
