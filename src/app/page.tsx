@@ -61,8 +61,8 @@ export default function Home() {
   return (
     <div className="container py-8 px-4 md:px-8">
       <section className="text-center mb-12 py-10">
-        <h1 className="font-headline text-4xl md:text-6xl font-black tracking-tighter mb-4 text-primary uppercase">
-          DISCOVER EXTRAORDINARY WORKS
+        <h1 className="font-headline text-4xl md:text-6xl font-black tracking-tighter mb-4 uppercase leading-none">
+          <span className="text-black">DISCOVER</span> <span className="text-primary">EXTRAORDINARY</span> <span className="text-black">WORKS</span>
         </h1>
         <p className="font-subheadline text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto font-medium tracking-wide uppercase">
           Show, Connect, Inspire.
