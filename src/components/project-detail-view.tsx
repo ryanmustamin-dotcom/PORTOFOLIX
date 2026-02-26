@@ -16,6 +16,7 @@ import ProjectCard from '@/components/project-card';
 import { Textarea } from '@/components/ui/textarea';
 import MessageDialog from '@/components/message-dialog';
 import { useToast } from '@/hooks/use-toast';
+import { sampleProjects } from '@/lib/sample-data';
 
 interface ProjectDetailViewProps {
   projectId: string;
@@ -31,21 +32,31 @@ export default function ProjectDetailView({ projectId, isModal = false }: Projec
   const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
 
   const projectRef = useMemo(() => {
-    if (!firestore || !projectId) return null;
+    if (!firestore || !projectId || projectId.startsWith('sample-')) return null;
     return doc(firestore, 'projects', projectId);
   }, [firestore, projectId]);
 
-  const { data: project, loading: loadingProject } = useDoc<Project>(projectRef);
+  const { data: firestoreProject, loading: loadingFirestore } = useDoc<Project>(projectRef);
   
+  const project = useMemo(() => {
+    if (firestoreProject) return firestoreProject;
+    if (projectId?.startsWith('sample-')) {
+      return sampleProjects.find(p => p.id === projectId) || null;
+    }
+    return null;
+  }, [firestoreProject, projectId]);
+
+  const loadingProject = projectRef ? loadingFirestore : false;
+
   const commentsQuery = useMemo(() => {
-    if (!firestore || !projectId) return null;
+    if (!firestore || !projectId || projectId.startsWith('sample-')) return null;
     return query(collection(firestore, 'projects', projectId, 'comments'), orderBy('createdAt', 'desc'));
   }, [firestore, projectId]);
 
   const { data: comments, loading: loadingComments } = useCollection<Comment>(commentsQuery);
 
   const userProjectsQuery = useMemo(() => {
-      if (!firestore || !project) return null;
+      if (!firestore || !project || project.id.startsWith('sample-')) return null;
       return query(
           collection(firestore, 'projects'),
           where('creator.uid', '==', project.creator.uid),
@@ -55,7 +66,15 @@ export default function ProjectDetailView({ projectId, isModal = false }: Projec
   }, [firestore, project]);
 
   const { data: userProjectsData } = useCollection<Project>(userProjectsQuery);
-  const userProjects = userProjectsData?.filter(p => p.id !== project?.id).slice(0, 3) || [];
+  
+  const userProjects = useMemo(() => {
+    if (project?.id.startsWith('sample-')) {
+      return sampleProjects
+        .filter(p => p.creator.uid === project.creator.uid && p.id !== project.id)
+        .slice(0, 3);
+    }
+    return userProjectsData?.filter(p => p.id !== project?.id).slice(0, 3) || [];
+  }, [project, userProjectsData]);
 
   const hasLiked = useMemo(() => {
     if (!user || !project?.likes) return false;
@@ -72,7 +91,10 @@ export default function ProjectDetailView({ projectId, isModal = false }: Projec
       toast({ variant: 'destructive', title: 'Anda harus masuk untuk memberikan suka.' });
       return;
     }
-    if (!projectRef) return;
+    if (!projectRef) {
+      toast({ title: 'Aksi Terbatas', description: 'Fitur suka belum tersedia untuk data sampel.' });
+      return;
+    }
 
     try {
       if (hasLiked) {
@@ -91,6 +113,10 @@ export default function ProjectDetailView({ projectId, isModal = false }: Projec
       return;
     }
     if (user.uid === project.creator.uid) return;
+    if (project.id.startsWith('sample-')) {
+      toast({ title: 'Aksi Terbatas', description: 'Fitur ikuti belum tersedia untuk kreator sampel.' });
+      return;
+    }
 
     const currentUserRef = doc(firestore, 'users', user.uid);
     const targetUserRef = doc(firestore, 'users', project.creator.uid);
@@ -116,6 +142,10 @@ export default function ProjectDetailView({ projectId, isModal = false }: Projec
       return;
     }
     if (!commentText.trim()) return;
+    if (project?.id.startsWith('sample-')) {
+        toast({ title: 'Aksi Terbatas', description: 'Fitur komentar belum tersedia untuk data sampel.' });
+        return;
+    }
 
     setIsSubmittingComment(true);
     try {
@@ -205,7 +235,14 @@ export default function ProjectDetailView({ projectId, isModal = false }: Projec
           <div className="space-y-6">
             {project.mediaUrls.map((url, index) => (
               <div key={index} className="relative aspect-video w-full overflow-hidden rounded-3xl bg-card border shadow-xl">
-                <Image src={url} alt={`${project.title} media ${index + 1}`} fill className="object-cover" data-ai-hint="project media" />
+                <Image 
+                  src={url} 
+                  alt={`${project.title} media ${index + 1}`} 
+                  fill 
+                  className="object-cover" 
+                  data-ai-hint="project media"
+                  sizes="(max-width: 1024px) 100vw, 80vw"
+                />
               </div>
             ))}
           </div>
