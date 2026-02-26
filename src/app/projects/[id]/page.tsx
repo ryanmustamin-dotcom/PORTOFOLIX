@@ -176,11 +176,11 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
                 </Link>
                 {user?.uid !== project.creator.uid && (
                   <div className="flex items-center space-x-2 shrink-0">
-                    <Button onClick={handleFollow} variant={isFollowing ? 'secondary' : 'outline'} size="sm" className="rounded-full px-4 font-headline text-[10px] tracking-widest uppercase">
+                    <Button onClick={handleFollow} variant={isFollowing ? 'secondary' : 'outline'} size="sm" className="rounded-full px-4 tracking-widest uppercase font-bold text-[10px]">
                       {isFollowing ? <Check className="h-4 w-4 mr-2" /> : <UserPlus className="h-4 w-4 mr-2" />}
                       {isFollowing ? 'Diikuti' : 'Ikuti'}
                     </Button>
-                    <Button onClick={() => setIsMessageDialogOpen(true)} variant="default" size="sm" className="rounded-full px-4 shadow-lg shadow-primary/20 font-headline text-[10px] tracking-widest uppercase">
+                    <Button onClick={() => setIsMessageDialogOpen(true)} variant="default" size="sm" className="rounded-full px-4 shadow-lg shadow-primary/20 tracking-widest uppercase font-bold text-[10px]">
                       <Mail className="h-4 w-4 mr-2" />
                       Pesan
                     </Button>
@@ -299,7 +299,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
           <div className="sticky top-24 space-y-6">
              <Card className="overflow-hidden border-none shadow-lg bg-white rounded-3xl">
                 <div className="h-2 w-full bg-primary" />
-                <CardContent className="p-6">
+                <CardContent className="p-6 font-subheadline">
                   <Link href={`/profile/${project.creator.username}`} className="flex flex-col items-center text-center group mb-6">
                     <Avatar className="h-24 w-24 mb-4 border-2 border-primary/20 transition-transform group-hover:scale-105 shadow-md">
                       <AvatarImage src={project.creator.avatarUrl || ''} alt={project.creator.name || ''} />
@@ -310,10 +310,10 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
                   </Link>
                   {user?.uid !== project.creator.uid && (
                     <div className="space-y-3">
-                      <Button onClick={handleFollow} variant={isFollowing ? 'secondary' : 'default'} className="w-full rounded-full shadow-lg shadow-primary/10 py-6 text-xs font-headline tracking-widest font-black uppercase">
+                      <Button onClick={handleFollow} variant={isFollowing ? 'secondary' : 'default'} className="w-full rounded-full shadow-lg shadow-primary/10 py-6 font-bold tracking-widest uppercase">
                         {isFollowing ? <><Check className="h-4 w-4 mr-2" /> Diikuti</> : <><UserPlus className="h-4 w-4 mr-2" /> Ikuti Kreator</>}
                       </Button>
-                      <Button onClick={() => setIsMessageDialogOpen(true)} variant="outline" className="w-full rounded-full py-6 text-xs font-headline tracking-widest font-black border-primary/20 hover:bg-primary/5 uppercase">
+                      <Button onClick={() => setIsMessageDialogOpen(true)} variant="outline" className="w-full rounded-full py-6 font-bold tracking-widest border-primary/20 hover:bg-primary/5 uppercase">
                         Kirim Pesan
                       </Button>
                     </div>

@@ -61,10 +61,10 @@ export default function Home() {
   return (
     <div className="container py-8 px-4 md:px-8">
       <section className="text-center mb-12 py-10">
-        <h1 className="font-headline text-4xl md:text-6xl font-black tracking-tighter mb-4 text-primary">
+        <h1 className="font-headline text-4xl md:text-6xl font-black tracking-tighter mb-4 text-primary uppercase">
           DISCOVER EXTRAORDINARY WORKS
         </h1>
-        <p className="font-subheadline text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto font-medium tracking-wide">
+        <p className="font-subheadline text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto font-medium tracking-wide uppercase">
           Show, Connect, Inspire.
         </p>
       </section>
@@ -76,7 +76,7 @@ export default function Home() {
                 variant={selectedCategory === null ? "secondary" : "ghost"} 
                 size="sm"
                 onClick={() => setSelectedCategory(null)}
-                className="rounded-full px-6 font-headline text-xs tracking-widest"
+                className="rounded-full px-6 font-bold tracking-widest uppercase"
               >
                 Semua
               </Button>
@@ -86,7 +86,7 @@ export default function Home() {
                   key={category} 
                   variant={selectedCategory === category ? "secondary" : "ghost"} 
                   size="sm" 
-                  className="whitespace-nowrap rounded-full px-6 font-headline text-xs tracking-widest"
+                  className="whitespace-nowrap rounded-full px-6 font-bold tracking-widest uppercase"
                   onClick={() => setSelectedCategory(category)}
                 >
                   {category}
@@ -132,7 +132,7 @@ export default function Home() {
               <Button variant="link" onClick={() => {
                 setSelectedCategory(null);
                 window.history.pushState({}, '', '/');
-              }} className="mt-2 text-primary font-black font-headline tracking-tighter">
+              }} className="mt-2 text-primary font-black tracking-tighter uppercase font-headline">
                 Lihat semua karya
               </Button>
             </div>

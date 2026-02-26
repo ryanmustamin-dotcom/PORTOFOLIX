@@ -203,17 +203,17 @@ export default function ProfilePage({ params }: { params: { username: string } }
 
             <div className="flex items-center space-x-2 mt-4 md:mt-0 self-start md:self-end shrink-0 pb-1">
               {isOwnProfile ? (
-                <Button onClick={() => setIsEditDialogOpen(true)} className="rounded-full px-8 py-6 font-headline font-black text-xs tracking-widest uppercase shadow-lg shadow-primary/20">Edit Profil</Button>
+                <Button onClick={() => setIsEditDialogOpen(true)} className="rounded-full px-8 py-6 font-bold tracking-widest uppercase shadow-lg shadow-primary/20">Edit Profil</Button>
               ) : (
                 <>
-                  <Button onClick={handleFollow} variant={isFollowing ? 'secondary' : 'default'} className="rounded-full px-8 py-6 font-headline font-black text-xs tracking-widest uppercase shadow-lg">
+                  <Button onClick={handleFollow} variant={isFollowing ? 'secondary' : 'default'} className="rounded-full px-8 py-6 font-bold tracking-widest uppercase shadow-lg">
                     {isFollowing ? (
                         <><Check className="h-4 w-4 mr-2" /> Mengikuti</>
                     ) : (
                         <><UserPlus className="h-4 w-4 mr-2" /> Ikuti</>
                     )}
                   </Button>
-                  <Button variant="outline" className="rounded-full px-8 py-6 font-headline font-black text-xs tracking-widest uppercase" onClick={() => setIsMessageDialogOpen(true)}>
+                  <Button variant="outline" className="rounded-full px-8 py-6 font-bold tracking-widest uppercase" onClick={() => setIsMessageDialogOpen(true)}>
                     <Mail className="h-4 w-4 mr-2" />
                     Pesan
                   </Button>
@@ -226,8 +226,8 @@ export default function ProfilePage({ params }: { params: { username: string } }
       
       <Tabs defaultValue="work" className="w-full">
         <TabsList className="mb-8 bg-muted/50 p-1 rounded-full w-fit">
-          <TabsTrigger value="work" className="rounded-full px-10 py-2 font-headline text-xs tracking-widest uppercase">Karya</TabsTrigger>
-          <TabsTrigger value="about" className="rounded-full px-10 py-2 font-headline text-xs tracking-widest uppercase">Tentang</TabsTrigger>
+          <TabsTrigger value="work" className="rounded-full px-10 py-2 font-subheadline text-xs tracking-widest uppercase font-bold">Karya</TabsTrigger>
+          <TabsTrigger value="about" className="rounded-full px-10 py-2 font-subheadline text-xs tracking-widest uppercase font-bold">Tentang</TabsTrigger>
         </TabsList>
         
         <TabsContent value="work">
