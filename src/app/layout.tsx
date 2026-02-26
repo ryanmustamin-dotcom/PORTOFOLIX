@@ -6,8 +6,8 @@ import Footer from '@/components/layout/footer';
 import { FirebaseClientProvider } from '@/firebase';
 
 export const metadata: Metadata = {
-  title: 'PORTOFOLIX',
-  description: 'Show, Connect, Inspire.',
+  title: 'PORTOFOLIX | Show, Connect, Inspire',
+  description: 'Show, Connect, Inspire. Showcase your creative portfolio to the world.',
 };
 
 export default function RootLayout({
@@ -23,7 +23,7 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet" />
       </head>
-      <body className="font-body antialiased min-h-screen flex flex-col">
+      <body className="font-body antialiased min-h-screen flex flex-col bg-white">
         <FirebaseClientProvider>
           <Header />
           <main className="flex-grow">{children}</main>
