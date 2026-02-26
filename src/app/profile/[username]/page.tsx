@@ -16,6 +16,7 @@ import { Mail, MapPin, UserPlus, Loader2, Check, Twitter, Instagram, Github } fr
 import { Card, CardContent } from '@/components/ui/card';
 import EditProfileDialog from '@/components/edit-profile-dialog';
 import MessageDialog from '@/components/message-dialog';
+import UserListDialog from '@/components/user-list-dialog';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 
@@ -26,6 +27,12 @@ export default function ProfilePage({ params }: { params: { username: string } }
   const [loadingUser, setLoadingUser] = useState(true);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
+  const [userListConfig, setUserListConfig] = useState<{ title: string; uids: string[]; isOpen: boolean }>({
+    title: '',
+    uids: [],
+    isOpen: false
+  });
+  
   const { toast } = useToast();
 
   useEffect(() => {
@@ -143,7 +150,7 @@ export default function ProfilePage({ params }: { params: { username: string } }
   }
 
   return (
-    <div className="container py-8">
+    <div className="container py-8 px-4 md:px-8">
       {isOwnProfile && user && (
         <EditProfileDialog 
             userProfile={user}
@@ -160,6 +167,13 @@ export default function ProfilePage({ params }: { params: { username: string } }
           onOpenChange={setIsMessageDialogOpen}
         />
       )}
+
+      <UserListDialog 
+        title={userListConfig.title}
+        userIds={userListConfig.uids}
+        isOpen={userListConfig.isOpen}
+        onOpenChange={(open) => setUserListConfig(prev => ({ ...prev, isOpen: open }))}
+      />
 
       <Card className="mb-8 overflow-hidden border-none shadow-xl bg-white rounded-3xl">
         <div className="h-48 md:h-64 bg-muted relative">
@@ -192,12 +206,18 @@ export default function ProfilePage({ params }: { params: { username: string } }
                         <span>{user.location}</span>
                     </div>
                 )}
-                 <div className="flex items-center space-x-1.5">
+                 <button 
+                  onClick={() => setUserListConfig({ title: 'Mengikuti', uids: user.following || [], isOpen: true })}
+                  className="flex items-center space-x-1.5 hover:text-primary transition-colors focus:outline-none"
+                >
                     <span><span className="font-black text-foreground">{user.following?.length || 0}</span> Mengikuti</span>
-                </div>
-                 <div className="flex items-center space-x-1.5">
+                </button>
+                 <button 
+                  onClick={() => setUserListConfig({ title: 'Pengikut', uids: user.followers || [], isOpen: true })}
+                  className="flex items-center space-x-1.5 hover:text-primary transition-colors focus:outline-none"
+                >
                     <span><span className="font-black text-foreground">{user.followers?.length || 0}</span> Pengikut</span>
-                </div>
+                </button>
               </div>
             </div>
 
