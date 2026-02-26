@@ -20,61 +20,43 @@
     },
     {
       "id": "project-thumb-1",
-      "imageUrl": "https://images.unsplash.com/photo-1633596683562-4a47eb4983c5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxhYnN0cmFjdCUyMDNkfGVufDB8fHx8MTc3MTkyMjc1M3ww&ixlib=rb-4.1.0&q=80&w=1080",
-      "description": "Abstract 3D render",
-      "imageHint": "abstract 3d"
+      "imageUrl": "https://images.unsplash.com/photo-1578632292335-df3abbb0d586?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxhbmltZSUyMGFydHxlbnwwfHx8fDE3NzE5OTYxMDV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Vibrant anime art illustration",
+      "imageHint": "anime art"
     },
     {
       "id": "project-thumb-2",
-      "imageUrl": "https://images.unsplash.com/photo-1517265035603-faefa167335b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxsYW5kc2NhcGUlMjBwaG90b2dyYXBoeXxlbnwwfHx8fDE3NzE5OTYxMDV8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "description": "Serene landscape photography",
-      "imageHint": "landscape photography"
+      "imageUrl": "https://images.unsplash.com/photo-1618336753974-aae8e04506aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtYW5nYSUyMGRyYXdpbmd8ZW58MHx8fHwxNzcxOTk2MTA1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Dynamic manga character drawing",
+      "imageHint": "manga drawing"
     },
     {
       "id": "project-thumb-3",
-      "imageUrl": "https://images.unsplash.com/photo-1633044088158-a87199429c34?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtaW5pbWFsaXN0JTIwYnJhbmRpbmd8ZW58MHx8fHwxNzcxOTgyMzA2fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "description": "Minimalist branding design",
-      "imageHint": "minimalist branding"
+      "imageUrl": "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxhbmltZSUyMGNoYXJhY3RlcnxlbnwwfHx8fDE3NzE5OTYxMDV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Detailed anime character design",
+      "imageHint": "anime character"
     },
     {
       "id": "project-thumb-4",
-      "imageUrl": "https://images.unsplash.com/photo-1762088942597-88ef9dc691fb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjaGFyYWN0ZXIlMjBpbGx1c3RyYXRpb258ZW58MHx8fHwxNzcxOTQ1Mzg2fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "description": "Character illustration",
-      "imageHint": "character illustration"
+      "imageUrl": "https://images.unsplash.com/photo-1541562232579-512a21360020?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjb21pYyUyMGFydHxlbnwwfHx8fDE3NzE5OTYxMDV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Action-packed comic art piece",
+      "imageHint": "comic art"
     },
     {
       "id": "project-thumb-5",
-      "imageUrl": "https://images.unsplash.com/photo-1698846296220-e44d9d4b9100?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxhcmNoaXRlY3R1cmUlMjBkZXNpZ258ZW58MHx8fHwxNzcxOTE0NDk2fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "description": "Architectural visualization",
-      "imageHint": "architecture design"
+      "imageUrl": "https://images.unsplash.com/photo-1560972550-aba3456b5564?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxza2V0Y2glMjBhcnR8ZW58MHx8fHwxNzcxOTk2MTA1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Hand-drawn character sketch",
+      "imageHint": "sketch art"
     },
     {
       "id": "project-thumb-6",
-      "imageUrl": "https://images.unsplash.com/photo-1541506618330-7c369fc759b5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxhcHAlMjBkZXNpZ258ZW58MHx8fHwxNzcxOTE2NjczfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "description": "Mobile app UI/UX design",
-      "imageHint": "app design"
-    },
-    {
-      "id": "project-thumb-7",
-      "imageUrl": "https://images.unsplash.com/photo-1578926375605-eaf7559b1458?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxkaWdpdGFsJTIwcGFpbnRpbmd8ZW58MHx8fHwxNzcxOTk2MTA1fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "description": "Vibrant digital painting",
-      "imageHint": "digital painting"
-    },
-    {
-      "id": "project-thumb-8",
-      "imageUrl": "https://images.unsplash.com/photo-1606937492590-2c6e942b1951?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxwYWNrYWdpbmclMjBkZXNpZ258ZW58MHx8fHwxNzcxOTM2MDA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "description": "Product packaging design",
-      "imageHint": "packaging design"
-    },
-    {
-      "id": "project-thumb-9",
-      "imageUrl": "https://images.unsplash.com/photo-1627843240043-aa499ed215e7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxtb3Rpb24lMjBncmFwaGljc3xlbnwwfHx8fDE3NzE5OTI1NzJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "description": "Motion graphics piece",
-      "imageHint": "motion graphics"
+      "imageUrl": "https://images.unsplash.com/photo-1580477667995-2b94f01c9516?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxkaWdpdGFsJTIwaWxsdXN0cmF0aW9ufGVufDB8fHx8MTc3MTk5NjEwNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Stylized digital illustration",
+      "imageHint": "digital illustration"
     },
     {
       "id": "header-bg",
-      "imageUrl": "https://images.unsplash.com/photo-1684139517679-032b7213ad2e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxhYnN0cmFjdCUyMGJhY2tncm91bmR8ZW58MHx8fHwxNzcxODg3OTU0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1684139517679-032b7213ad2e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMGJhY2tncm91bmR8ZW58MHx8fHwxNzcxODg3OTU0fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "description": "Abstract background for header",
       "imageHint": "abstract background"
     }
