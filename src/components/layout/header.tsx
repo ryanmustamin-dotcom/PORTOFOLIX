@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
-import { Search, Upload, Palette, LogOut, Languages } from 'lucide-react';
+import { Search, Upload, Palette, LogOut, Settings, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -15,28 +15,13 @@ export default function Header() {
   const { user, userProfile, loading } = useUser();
   const auth = useAuth();
   const router = useRouter();
-  const [lang, setLang] = useState<'ID' | 'EN'>('ID');
 
   const handleLogout = async () => {
     await signOut(auth);
     router.push('/');
   };
 
-  const toggleLang = () => {
-    setLang(prev => prev === 'ID' ? 'EN' : 'ID');
-  };
-
   const isLoggedIn = !loading && user;
-
-  const t = {
-    discover: lang === 'ID' ? 'Jelajahi' : 'Discover',
-    search: lang === 'ID' ? 'Cari proyek, artis...' : 'Search projects, artists...',
-    upload: lang === 'ID' ? 'Unggah' : 'Upload',
-    profile: lang === 'ID' ? 'Profil' : 'Profile',
-    settings: lang === 'ID' ? 'Pengaturan' : 'Settings',
-    logout: lang === 'ID' ? 'Keluar' : 'Log out',
-    login: lang === 'ID' ? 'Masuk' : 'Login',
-  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -47,7 +32,7 @@ export default function Header() {
             <span className="font-black font-headline text-2xl tracking-tighter text-primary">PORTOFOLIX</span>
           </Link>
           <nav className="flex items-center space-x-6 text-sm font-medium">
-            <Link href="/" className="transition-colors hover:text-primary text-foreground/80">{t.discover}</Link>
+            <Link href="/" className="transition-colors hover:text-primary text-foreground/80">Jelajahi</Link>
           </nav>
         </div>
         <div className="flex flex-1 items-center justify-between gap-4">
@@ -57,20 +42,16 @@ export default function Header() {
             </Link>
             <div className="relative flex-1 md:flex-none md:w-64 lg:w-96">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input placeholder={t.search} className="pl-9 w-full bg-muted/30 focus:bg-background transition-colors" />
+              <input placeholder="Cari proyek, artis..." className="flex h-10 w-full rounded-md border border-input bg-muted/30 px-3 py-2 text-sm pl-9 focus:bg-background transition-colors outline-none focus:ring-2 focus:ring-primary/20" />
             </div>
             <div className="flex items-center space-x-2">
-            <Button variant="ghost" size="icon" onClick={toggleLang} className="text-xs font-bold">
-                <Languages className="h-4 w-4 mr-1" />
-                {lang}
-            </Button>
             
             {isLoggedIn && userProfile ? (
               <>
                 <Link href="/upload">
                   <Button className="shadow-md">
                     <Upload className="mr-0 md:mr-2 h-4 w-4" />
-                    <span className="hidden md:inline">{t.upload}</span>
+                    <span className="hidden md:inline">Unggah</span>
                   </Button>
                 </Link>
                 <DropdownMenu>
@@ -93,15 +74,21 @@ export default function Header() {
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link href={`/profile/${userProfile.username}`} className="w-full cursor-pointer">{t.profile}</Link>
+                      <Link href={`/profile/${userProfile.username}`} className="w-full cursor-pointer">
+                        <User className="mr-2 h-4 w-4" />
+                        Profil
+                      </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer">
-                      {t.settings}
+                    <DropdownMenuItem asChild>
+                      <Link href="/settings" className="w-full cursor-pointer">
+                        <Settings className="mr-2 h-4 w-4" />
+                        Pengaturan
+                      </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive cursor-pointer">
                       <LogOut className="mr-2 h-4 w-4" />
-                      {t.logout}
+                      Keluar
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -109,7 +96,7 @@ export default function Header() {
             ) : (
               !loading && (
                 <Link href="/auth">
-                  <Button variant="outline" className="border-primary/50 hover:bg-primary/5">{t.login}</Button>
+                  <Button variant="outline" className="border-primary/50 hover:bg-primary/5">Masuk</Button>
                 </Link>
               )
             )}
