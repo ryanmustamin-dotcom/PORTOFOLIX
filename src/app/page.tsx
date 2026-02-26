@@ -40,10 +40,10 @@ export default function Home() {
     <div className="container py-8">
       <section className="text-center mb-12">
         <h1 className="font-headline text-4xl md:text-6xl font-bold tracking-tight mb-4">
-          Temukan Karya Luar Biasa
+          DISCOVER EXTRAORDINARY WORKS
         </h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-          Tunjukkan, Hubungkan, Inspirasi.
+          Show, Connect, Inspire.
         </p>
       </section>
 
