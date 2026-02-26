@@ -162,48 +162,59 @@ export default function ProfilePage({ params }: { params: { username: string } }
         />
       )}
 
-      <Card className="mb-8 overflow-hidden border-none shadow-xl bg-white">
+      <Card className="mb-8 overflow-hidden border-none shadow-xl bg-white rounded-3xl">
         <div className="h-48 md:h-64 bg-muted relative">
-          <Image src={user.headerUrl || "https://picsum.photos/seed/headerbg/1200/400"} alt="Profile banner" fill className="object-cover" data-ai-hint="abstract background" />
+          <Image 
+            src={user.headerUrl || "https://picsum.photos/seed/headerbg/1200/400"} 
+            alt="Profile banner" 
+            fill 
+            className="object-cover" 
+            data-ai-hint="abstract background" 
+          />
         </div>
-        <div className="p-6">
-          <div className="flex flex-col md:flex-row items-start md:items-end -mt-24 relative z-10">
-            <Avatar className="h-36 w-36 border-4 border-white shadow-lg shrink-0">
-              <AvatarImage src={user.avatarUrl ?? undefined} alt={user.name ?? ''} />
-              <AvatarFallback className="text-2xl">{user.name?.slice(0, 2).toUpperCase() ?? '??'}</AvatarFallback>
-            </Avatar>
-            <div className="mt-4 md:mt-0 md:ml-6 flex-grow">
-              <h1 className="font-headline text-3xl font-bold">{user.name}</h1>
+        <div className="px-6 pb-6 pt-0">
+          <div className="flex flex-col md:flex-row items-start md:items-end gap-6">
+            <div className="-mt-16 md:-mt-20 relative z-10 shrink-0">
+              <Avatar className="h-32 w-32 md:h-40 md:w-40 border-4 border-white shadow-xl">
+                <AvatarImage src={user.avatarUrl ?? undefined} alt={user.name ?? ''} />
+                <AvatarFallback className="text-2xl">{user.name?.slice(0, 2).toUpperCase() ?? '??'}</AvatarFallback>
+              </Avatar>
+            </div>
+            
+            <div className="flex-grow pt-4 md:pt-0">
+              <h1 className="font-headline text-3xl font-bold tracking-tight">{user.name}</h1>
               <p className="text-lg text-muted-foreground">@{user.username}</p>
               {user.status && <p className="text-md font-semibold text-primary mt-1">{user.status}</p>}
-              <div className="flex items-center space-x-4 text-muted-foreground mt-2">
+              
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-muted-foreground mt-3">
                 {user.location && (
-                    <div className="flex items-center space-x-1">
+                    <div className="flex items-center space-x-1.5">
                         <MapPin className="h-4 w-4" />
                         <span>{user.location}</span>
                     </div>
                 )}
-                 <div className="flex items-center space-x-1">
+                 <div className="flex items-center space-x-1.5">
                     <span><span className="font-bold text-foreground">{user.following?.length || 0}</span> Mengikuti</span>
                 </div>
-                 <div className="flex items-center space-x-1">
+                 <div className="flex items-center space-x-1.5">
                     <span><span className="font-bold text-foreground">{user.followers?.length || 0}</span> Pengikut</span>
                 </div>
               </div>
             </div>
-            <div className="flex items-center space-x-2 mt-4 md:mt-0 self-start md:self-end shrink-0">
+
+            <div className="flex items-center space-x-2 mt-4 md:mt-0 self-start md:self-end shrink-0 pb-1">
               {isOwnProfile ? (
-                <Button onClick={() => setIsEditDialogOpen(true)} className="rounded-full px-6">Edit Profil</Button>
+                <Button onClick={() => setIsEditDialogOpen(true)} className="rounded-full px-8 py-6 font-bold shadow-lg shadow-primary/20">Edit Profil</Button>
               ) : (
                 <>
-                  <Button onClick={handleFollow} variant={isFollowing ? 'secondary' : 'default'} className="rounded-full px-6">
+                  <Button onClick={handleFollow} variant={isFollowing ? 'secondary' : 'default'} className="rounded-full px-8 py-6 font-bold shadow-lg">
                     {isFollowing ? (
                         <><Check className="h-4 w-4 mr-2" /> Mengikuti</>
                     ) : (
                         <><UserPlus className="h-4 w-4 mr-2" /> Ikuti</>
                     )}
                   </Button>
-                  <Button variant="outline" className="rounded-full px-6" onClick={() => setIsMessageDialogOpen(true)}>
+                  <Button variant="outline" className="rounded-full px-8 py-6 font-bold" onClick={() => setIsMessageDialogOpen(true)}>
                     <Mail className="h-4 w-4 mr-2" />
                     Pesan
                   </Button>
@@ -215,10 +226,11 @@ export default function ProfilePage({ params }: { params: { username: string } }
       </Card>
       
       <Tabs defaultValue="work" className="w-full">
-        <TabsList className="mb-6 bg-muted/50 p-1 rounded-full w-fit">
-          <TabsTrigger value="work" className="rounded-full px-8">Karya</TabsTrigger>
-          <TabsTrigger value="about" className="rounded-full px-8">Tentang</TabsTrigger>
+        <TabsList className="mb-8 bg-muted/50 p-1 rounded-full w-fit">
+          <TabsTrigger value="work" className="rounded-full px-10 py-2">Karya</TabsTrigger>
+          <TabsTrigger value="about" className="rounded-full px-10 py-2">Tentang</TabsTrigger>
         </TabsList>
+        
         <TabsContent value="work">
           {isLoadingProjects && (
             <div className="flex justify-center items-center py-16">
@@ -240,16 +252,17 @@ export default function ProfilePage({ params }: { params: { username: string } }
             )
           )}
         </TabsContent>
+        
         <TabsContent value="about">
-          <Card className="border-none shadow-lg">
-            <CardContent className="p-8 grid grid-cols-1 md:grid-cols-3 gap-12">
+          <Card className="border-none shadow-lg rounded-3xl">
+            <CardContent className="p-10 grid grid-cols-1 md:grid-cols-3 gap-12">
                 <div className="md:col-span-2">
-                    <h2 className="font-headline text-xl font-semibold mb-4 text-primary">Biografi</h2>
-                    <p className="text-foreground/80 leading-relaxed whitespace-pre-wrap">{user.bio || 'Pengguna ini belum menulis biografi.'}</p>
+                    <h2 className="font-headline text-xl font-semibold mb-6 text-primary tracking-wide">Biografi</h2>
+                    <p className="text-foreground/80 text-lg leading-relaxed whitespace-pre-wrap">{user.bio || 'Pengguna ini belum menulis biografi.'}</p>
                 </div>
                 <div>
-                     <h2 className="font-headline text-xl font-semibold mb-4 text-primary">Tautan Sosial</h2>
-                     <div className="space-y-4 text-muted-foreground">
+                     <h2 className="font-headline text-xl font-semibold mb-6 text-primary tracking-wide">Tautan Sosial</h2>
+                     <div className="space-y-5 text-muted-foreground">
                         <SocialLink href={user.socialLinks?.twitter} icon={<Twitter className="h-5 w-5" />}>Twitter</SocialLink>
                         <SocialLink href={user.socialLinks?.instagram} icon={<Instagram className="h-5 w-5" />}>Instagram</SocialLink>
                         <SocialLink href={user.socialLinks?.github} icon={<Github className="h-5 w-5" />}>GitHub</SocialLink>
