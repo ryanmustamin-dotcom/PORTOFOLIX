@@ -66,3 +66,7 @@
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
+
+.font-subheadline {
+  font-family: 'Open Sans', sans-serif;
+}

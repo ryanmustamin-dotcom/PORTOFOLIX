@@ -17,7 +17,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import EditProfileDialog from '@/components/edit-profile-dialog';
 import MessageDialog from '@/components/message-dialog';
 import { useToast } from '@/hooks/use-toast';
-import Link from 'link';
+import Link from 'next/link';
 
 export default function ProfilePage({ params }: { params: { username: string } }) {
   const firestore = useFirestore();
@@ -135,7 +135,7 @@ export default function ProfilePage({ params }: { params: { username: string } }
   const SocialLink = ({ href, icon, children }: { href?: string, icon: React.ReactNode, children: React.ReactNode }) => {
     if (!href) return null;
     return (
-      <Link href={href} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 hover:text-primary transition-colors font-headline text-xs tracking-widest font-bold uppercase">
+      <Link href={href} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 hover:text-primary transition-colors font-subheadline text-xs tracking-widest font-bold uppercase">
         {icon}
         <span>{children}</span>
       </Link>
@@ -182,10 +182,10 @@ export default function ProfilePage({ params }: { params: { username: string } }
             
             <div className="flex-grow pt-4 md:pt-0">
               <h1 className="font-headline text-3xl font-black tracking-tighter uppercase">{user.name}</h1>
-              <p className="font-headline text-lg text-muted-foreground uppercase tracking-tight font-medium">@{user.username}</p>
-              {user.status && <p className="font-headline text-xs font-black text-primary mt-1 tracking-widest uppercase">{user.status}</p>}
+              <p className="font-subheadline text-lg text-muted-foreground uppercase tracking-tight font-medium">@{user.username}</p>
+              {user.status && <p className="font-subheadline text-xs font-black text-primary mt-1 tracking-widest uppercase">{user.status}</p>}
               
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-muted-foreground mt-3 font-headline text-[10px] tracking-widest uppercase font-bold">
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-muted-foreground mt-3 font-subheadline text-[10px] tracking-widest uppercase font-bold">
                 {user.location && (
                     <div className="flex items-center space-x-1.5">
                         <MapPin className="h-4 w-4" />
@@ -246,7 +246,7 @@ export default function ProfilePage({ params }: { params: { username: string } }
             !isLoadingProjects && (
               <div className="text-center py-24 border-2 border-dashed rounded-3xl bg-muted/5">
                 <h3 className="text-xl font-black text-muted-foreground font-headline tracking-tighter uppercase">Belum ada karya</h3>
-                <p className="font-headline text-xs tracking-widest font-bold text-muted-foreground mt-2 uppercase">Kreator ini belum mengunggah proyek apapun.</p>
+                <p className="font-subheadline text-xs tracking-widest font-bold text-muted-foreground mt-2 uppercase">Kreator ini belum mengunggah proyek apapun.</p>
               </div>
             )
           )}
@@ -256,17 +256,17 @@ export default function ProfilePage({ params }: { params: { username: string } }
           <Card className="border-none shadow-lg rounded-3xl">
             <CardContent className="p-10 grid grid-cols-1 md:grid-cols-3 gap-12">
                 <div className="md:col-span-2">
-                    <h2 className="font-headline text-xl font-black mb-6 text-primary tracking-tighter uppercase">Biografi</h2>
-                    <p className="text-foreground/80 text-lg leading-relaxed whitespace-pre-wrap">{user.bio || 'Pengguna ini belum menulis biografi.'}</p>
+                    <h2 className="font-subheadline text-xl font-black mb-6 text-primary tracking-tighter uppercase">Biografi</h2>
+                    <p className="text-foreground/80 text-lg leading-relaxed whitespace-pre-wrap font-subheadline">{user.bio || 'Pengguna ini belum menulis biografi.'}</p>
                 </div>
                 <div>
-                     <h2 className="font-headline text-xl font-black mb-6 text-primary tracking-tighter uppercase">Media Sosial</h2>
+                     <h2 className="font-subheadline text-xl font-black mb-6 text-primary tracking-tighter uppercase">Media Sosial</h2>
                      <div className="space-y-5 text-muted-foreground">
                         <SocialLink href={user.socialLinks?.twitter} icon={<Twitter className="h-5 w-5" />}>Twitter</SocialLink>
                         <SocialLink href={user.socialLinks?.instagram} icon={<Instagram className="h-5 w-5" />}>Instagram</SocialLink>
                         <SocialLink href={user.socialLinks?.github} icon={<Github className="h-5 w-5" />}>GitHub</SocialLink>
                         {!user.socialLinks?.twitter && !user.socialLinks?.instagram && !user.socialLinks?.github && (
-                          <p className="font-headline text-[10px] tracking-widest uppercase font-bold text-muted-foreground/50">Tidak ada tautan tersedia.</p>
+                          <p className="font-subheadline text-[10px] tracking-widest uppercase font-bold text-muted-foreground/50">Tidak ada tautan tersedia.</p>
                         )}
                      </div>
                 </div>

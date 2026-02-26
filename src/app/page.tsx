@@ -64,7 +64,7 @@ export default function Home() {
         <h1 className="font-headline text-4xl md:text-6xl font-black tracking-tighter mb-4 text-primary">
           DISCOVER EXTRAORDINARY WORKS
         </h1>
-        <p className="font-headline text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto font-medium tracking-wide">
+        <p className="font-subheadline text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto font-medium tracking-wide">
           Show, Connect, Inspire.
         </p>
       </section>
@@ -114,8 +114,8 @@ export default function Home() {
         <>
           {searchQuery && (
             <div className="mb-6">
-              <p className="text-muted-foreground font-headline text-sm tracking-wide">
-                Hasil pencarian untuk: <span className="font-black text-foreground">"{searchQuery}"</span>
+              <p className="text-muted-foreground font-subheadline text-sm tracking-wide">
+                Hasil pencarian untuk: <span className="font-bold text-foreground text-base">"{searchQuery}"</span>
               </p>
             </div>
           )}
@@ -128,7 +128,7 @@ export default function Home() {
             </div>
           ) : (
             <div className="text-center py-20 bg-muted/5 rounded-3xl border-2 border-dashed">
-              <p className="text-muted-foreground text-lg font-headline">Tidak ada karya yang ditemukan.</p>
+              <p className="text-muted-foreground text-lg font-subheadline">Tidak ada karya yang ditemukan.</p>
               <Button variant="link" onClick={() => {
                 setSelectedCategory(null);
                 window.history.pushState({}, '', '/');
