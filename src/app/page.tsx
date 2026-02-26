@@ -10,15 +10,18 @@ import ProjectCard from '@/components/project-card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { sampleProjects } from '@/lib/sample-data';
+import ProjectDetailsDialog from '@/components/project-details-dialog';
 
 export default function Home() {
   const firestore = useFirestore();
   const searchParams = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   
   const searchQuery = searchParams.get('q')?.toLowerCase() || '';
 
-  // Reset category when search query changes significantly or user clicks Jelajah from header
+  // Reset category when search query changes
   useEffect(() => {
     if (searchQuery) {
       setSelectedCategory(null);
@@ -58,6 +61,11 @@ export default function Home() {
     return list;
   }, [firestoreProjects, loading, selectedCategory, searchQuery]);
 
+  const handleOpenProject = (projectId: string) => {
+    setSelectedProjectId(projectId);
+    setIsDialogOpen(true);
+  };
+
   return (
     <div className="container py-8 px-4 md:px-8">
       <section className="text-center mb-12 py-10">
@@ -76,7 +84,7 @@ export default function Home() {
                 variant={selectedCategory === null ? "secondary" : "ghost"} 
                 size="sm"
                 onClick={() => setSelectedCategory(null)}
-                className="rounded-full px-6 font-bold tracking-widest uppercase"
+                className="rounded-full px-6 font-bold tracking-widest uppercase font-subheadline"
               >
                 Semua
               </Button>
@@ -86,7 +94,7 @@ export default function Home() {
                   key={category} 
                   variant={selectedCategory === category ? "secondary" : "ghost"} 
                   size="sm" 
-                  className="whitespace-nowrap rounded-full px-6 font-bold tracking-widest uppercase"
+                  className="whitespace-nowrap rounded-full px-6 font-bold tracking-widest uppercase font-subheadline"
                   onClick={() => setSelectedCategory(category)}
                 >
                   {category}
@@ -123,12 +131,12 @@ export default function Home() {
           {projects && projects.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
               {projects.map(project => (
-                <ProjectCard key={project.id} project={project} />
+                <ProjectCard key={project.id} project={project} onOpen={handleOpenProject} />
               ))}
             </div>
           ) : (
             <div className="text-center py-20 bg-muted/5 rounded-3xl border-2 border-dashed">
-              <p className="text-muted-foreground text-lg font-subheadline">Tidak ada karya yang ditemukan.</p>
+              <p className="text-muted-foreground text-lg font-subheadline uppercase tracking-widest font-bold">Tidak ada karya yang ditemukan.</p>
               <Button variant="link" onClick={() => {
                 setSelectedCategory(null);
                 window.history.pushState({}, '', '/');
@@ -139,6 +147,12 @@ export default function Home() {
           )}
         </>
       )}
+
+      <ProjectDetailsDialog 
+        projectId={selectedProjectId} 
+        isOpen={isDialogOpen} 
+        onOpenChange={setIsDialogOpen} 
+      />
     </div>
   );
 }
