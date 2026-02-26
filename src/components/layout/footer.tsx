@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { Palette } from 'lucide-react';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -7,9 +6,8 @@ export default function Footer() {
     <footer className="border-t bg-card mt-12">
       <div className="container py-8">
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center space-x-2">
-            <Palette className="h-6 w-6 text-primary" />
-            <span className="font-bold font-headline text-lg">PORTOFOLIX</span>
+          <div className="flex items-center">
+            <span className="font-bold font-headline text-lg text-primary">PORTOFOLIX</span>
           </div>
           <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
             <Link href="#" className="hover:text-primary">About</Link>

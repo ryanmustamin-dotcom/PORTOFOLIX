@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Search, Upload, Palette, LogOut, Settings, User } from 'lucide-react';
+import { Search, Upload, LogOut, Settings, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -27,8 +27,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center">
         <div className="mr-4 hidden md:flex">
-          <Link href="/" className="mr-6 flex items-center space-x-2">
-            <Palette className="h-7 w-7 text-primary" />
+          <Link href="/" className="mr-6 flex items-center">
             <span className="font-black font-headline text-2xl tracking-tighter text-primary">PORTOFOLIX</span>
           </Link>
           <nav className="flex items-center space-x-6 text-sm font-medium">
@@ -36,8 +35,7 @@ export default function Header() {
           </nav>
         </div>
         <div className="flex flex-1 items-center justify-between gap-4">
-            <Link href="/" className="flex items-center space-x-2 md:hidden">
-              <Palette className="h-6 w-6 text-primary" />
+            <Link href="/" className="flex items-center md:hidden">
               <span className="font-bold font-headline text-lg text-primary">PORTOFOLIX</span>
             </Link>
             <div className="relative flex-1 md:flex-none md:w-64 lg:w-96">

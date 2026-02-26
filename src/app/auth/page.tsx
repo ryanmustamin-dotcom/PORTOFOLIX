@@ -15,7 +15,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Chrome, Palette } from 'lucide-react';
+import { Chrome } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth, useFirestore } from '@/firebase';
 import { useToast } from '@/hooks/use-toast';
@@ -116,9 +116,8 @@ export default function AuthPage() {
     <div className="flex items-center justify-center min-h-screen bg-background p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-6">
-            <Link href="/" className="inline-flex items-center space-x-2">
-                <Palette className="h-8 w-8 text-primary" />
-                <span className="font-bold font-headline text-3xl">PORTOFOLIX</span>
+            <Link href="/" className="inline-flex items-center">
+                <span className="font-bold font-headline text-3xl text-primary">PORTOFOLIX</span>
             </Link>
             <p className="text-muted-foreground mt-2">Show, Connect, Inspire.</p>
         </div>
