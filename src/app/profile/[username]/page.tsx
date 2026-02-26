@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
@@ -18,7 +17,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import EditProfileDialog from '@/components/edit-profile-dialog';
 import MessageDialog from '@/components/message-dialog';
 import { useToast } from '@/hooks/use-toast';
-import Link from 'next/link';
+import Link from 'link';
 
 export default function ProfilePage({ params }: { params: { username: string } }) {
   const firestore = useFirestore();
@@ -125,7 +124,7 @@ export default function ProfilePage({ params }: { params: { username: string } }
       <div className="flex justify-center items-center h-[60vh]">
         <div className="text-center">
           <Loader2 className="h-12 w-12 animate-spin text-primary inline-block mb-4" />
-          <p className="text-lg text-muted-foreground">Memuat Profil...</p>
+          <p className="font-headline text-lg text-muted-foreground uppercase tracking-widest font-black">Memuat Profil...</p>
         </div>
       </div>
     );
@@ -136,7 +135,7 @@ export default function ProfilePage({ params }: { params: { username: string } }
   const SocialLink = ({ href, icon, children }: { href?: string, icon: React.ReactNode, children: React.ReactNode }) => {
     if (!href) return null;
     return (
-      <Link href={href} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 hover:text-primary transition-colors">
+      <Link href={href} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 hover:text-primary transition-colors font-headline text-xs tracking-widest font-bold uppercase">
         {icon}
         <span>{children}</span>
       </Link>
@@ -177,16 +176,16 @@ export default function ProfilePage({ params }: { params: { username: string } }
             <div className="-mt-16 md:-mt-20 relative z-10 shrink-0">
               <Avatar className="h-32 w-32 md:h-40 md:w-40 border-4 border-white shadow-xl">
                 <AvatarImage src={user.avatarUrl ?? undefined} alt={user.name ?? ''} />
-                <AvatarFallback className="text-2xl">{user.name?.slice(0, 2).toUpperCase() ?? '??'}</AvatarFallback>
+                <AvatarFallback className="text-2xl font-headline font-black">{user.name?.slice(0, 2).toUpperCase() ?? '??'}</AvatarFallback>
               </Avatar>
             </div>
             
             <div className="flex-grow pt-4 md:pt-0">
-              <h1 className="font-headline text-3xl font-bold tracking-tight">{user.name}</h1>
-              <p className="text-lg text-muted-foreground">@{user.username}</p>
-              {user.status && <p className="text-md font-semibold text-primary mt-1">{user.status}</p>}
+              <h1 className="font-headline text-3xl font-black tracking-tighter uppercase">{user.name}</h1>
+              <p className="font-headline text-lg text-muted-foreground uppercase tracking-tight font-medium">@{user.username}</p>
+              {user.status && <p className="font-headline text-xs font-black text-primary mt-1 tracking-widest uppercase">{user.status}</p>}
               
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-muted-foreground mt-3">
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-muted-foreground mt-3 font-headline text-[10px] tracking-widest uppercase font-bold">
                 {user.location && (
                     <div className="flex items-center space-x-1.5">
                         <MapPin className="h-4 w-4" />
@@ -194,27 +193,27 @@ export default function ProfilePage({ params }: { params: { username: string } }
                     </div>
                 )}
                  <div className="flex items-center space-x-1.5">
-                    <span><span className="font-bold text-foreground">{user.following?.length || 0}</span> Mengikuti</span>
+                    <span><span className="font-black text-foreground">{user.following?.length || 0}</span> Mengikuti</span>
                 </div>
                  <div className="flex items-center space-x-1.5">
-                    <span><span className="font-bold text-foreground">{user.followers?.length || 0}</span> Pengikut</span>
+                    <span><span className="font-black text-foreground">{user.followers?.length || 0}</span> Pengikut</span>
                 </div>
               </div>
             </div>
 
             <div className="flex items-center space-x-2 mt-4 md:mt-0 self-start md:self-end shrink-0 pb-1">
               {isOwnProfile ? (
-                <Button onClick={() => setIsEditDialogOpen(true)} className="rounded-full px-8 py-6 font-bold shadow-lg shadow-primary/20">Edit Profil</Button>
+                <Button onClick={() => setIsEditDialogOpen(true)} className="rounded-full px-8 py-6 font-headline font-black text-xs tracking-widest uppercase shadow-lg shadow-primary/20">Edit Profil</Button>
               ) : (
                 <>
-                  <Button onClick={handleFollow} variant={isFollowing ? 'secondary' : 'default'} className="rounded-full px-8 py-6 font-bold shadow-lg">
+                  <Button onClick={handleFollow} variant={isFollowing ? 'secondary' : 'default'} className="rounded-full px-8 py-6 font-headline font-black text-xs tracking-widest uppercase shadow-lg">
                     {isFollowing ? (
                         <><Check className="h-4 w-4 mr-2" /> Mengikuti</>
                     ) : (
                         <><UserPlus className="h-4 w-4 mr-2" /> Ikuti</>
                     )}
                   </Button>
-                  <Button variant="outline" className="rounded-full px-8 py-6 font-bold" onClick={() => setIsMessageDialogOpen(true)}>
+                  <Button variant="outline" className="rounded-full px-8 py-6 font-headline font-black text-xs tracking-widest uppercase" onClick={() => setIsMessageDialogOpen(true)}>
                     <Mail className="h-4 w-4 mr-2" />
                     Pesan
                   </Button>
@@ -227,8 +226,8 @@ export default function ProfilePage({ params }: { params: { username: string } }
       
       <Tabs defaultValue="work" className="w-full">
         <TabsList className="mb-8 bg-muted/50 p-1 rounded-full w-fit">
-          <TabsTrigger value="work" className="rounded-full px-10 py-2">Karya</TabsTrigger>
-          <TabsTrigger value="about" className="rounded-full px-10 py-2">Tentang</TabsTrigger>
+          <TabsTrigger value="work" className="rounded-full px-10 py-2 font-headline text-xs tracking-widest uppercase">Karya</TabsTrigger>
+          <TabsTrigger value="about" className="rounded-full px-10 py-2 font-headline text-xs tracking-widest uppercase">Tentang</TabsTrigger>
         </TabsList>
         
         <TabsContent value="work">
@@ -246,8 +245,8 @@ export default function ProfilePage({ params }: { params: { username: string } }
           ) : (
             !isLoadingProjects && (
               <div className="text-center py-24 border-2 border-dashed rounded-3xl bg-muted/5">
-                <h3 className="text-xl font-semibold text-muted-foreground font-headline">Belum ada karya</h3>
-                <p className="text-muted-foreground mt-2">Kreator ini belum mengunggah proyek apapun.</p>
+                <h3 className="text-xl font-black text-muted-foreground font-headline tracking-tighter uppercase">Belum ada karya</h3>
+                <p className="font-headline text-xs tracking-widest font-bold text-muted-foreground mt-2 uppercase">Kreator ini belum mengunggah proyek apapun.</p>
               </div>
             )
           )}
@@ -257,17 +256,17 @@ export default function ProfilePage({ params }: { params: { username: string } }
           <Card className="border-none shadow-lg rounded-3xl">
             <CardContent className="p-10 grid grid-cols-1 md:grid-cols-3 gap-12">
                 <div className="md:col-span-2">
-                    <h2 className="font-headline text-xl font-semibold mb-6 text-primary tracking-wide">Biografi</h2>
+                    <h2 className="font-headline text-xl font-black mb-6 text-primary tracking-tighter uppercase">Biografi</h2>
                     <p className="text-foreground/80 text-lg leading-relaxed whitespace-pre-wrap">{user.bio || 'Pengguna ini belum menulis biografi.'}</p>
                 </div>
                 <div>
-                     <h2 className="font-headline text-xl font-semibold mb-6 text-primary tracking-wide">Tautan Sosial</h2>
+                     <h2 className="font-headline text-xl font-black mb-6 text-primary tracking-tighter uppercase">Media Sosial</h2>
                      <div className="space-y-5 text-muted-foreground">
                         <SocialLink href={user.socialLinks?.twitter} icon={<Twitter className="h-5 w-5" />}>Twitter</SocialLink>
                         <SocialLink href={user.socialLinks?.instagram} icon={<Instagram className="h-5 w-5" />}>Instagram</SocialLink>
                         <SocialLink href={user.socialLinks?.github} icon={<Github className="h-5 w-5" />}>GitHub</SocialLink>
                         {!user.socialLinks?.twitter && !user.socialLinks?.instagram && !user.socialLinks?.github && (
-                          <p className="italic text-sm">Tidak ada tautan tersedia.</p>
+                          <p className="font-headline text-[10px] tracking-widest uppercase font-bold text-muted-foreground/50">Tidak ada tautan tersedia.</p>
                         )}
                      </div>
                 </div>

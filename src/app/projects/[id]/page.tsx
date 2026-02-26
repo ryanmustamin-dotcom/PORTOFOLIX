@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useMemo, useState } from 'react';
@@ -171,34 +170,34 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
                     <AvatarFallback>{project.creator.name?.charAt(0)}</AvatarFallback>
                   </Avatar>
                   <div>
-                    <h1 className="font-headline text-xl font-bold group-hover:text-primary transition-colors">{project.title}</h1>
-                    <p className="text-sm text-muted-foreground">Oleh {project.creator.name}</p>
+                    <h1 className="font-headline text-xl font-black group-hover:text-primary transition-colors tracking-tighter">{project.title}</h1>
+                    <p className="font-headline text-[10px] text-muted-foreground uppercase tracking-widest font-bold">Oleh {project.creator.name}</p>
                   </div>
                 </Link>
                 {user?.uid !== project.creator.uid && (
                   <div className="flex items-center space-x-2 shrink-0">
-                    <Button onClick={handleFollow} variant={isFollowing ? 'secondary' : 'outline'} size="sm" className="rounded-full px-4">
+                    <Button onClick={handleFollow} variant={isFollowing ? 'secondary' : 'outline'} size="sm" className="rounded-full px-4 font-headline text-[10px] tracking-widest uppercase">
                       {isFollowing ? <Check className="h-4 w-4 mr-2" /> : <UserPlus className="h-4 w-4 mr-2" />}
                       {isFollowing ? 'Diikuti' : 'Ikuti'}
                     </Button>
-                    <Button onClick={() => setIsMessageDialogOpen(true)} variant="default" size="sm" className="rounded-full px-4 shadow-lg shadow-primary/20">
+                    <Button onClick={() => setIsMessageDialogOpen(true)} variant="default" size="sm" className="rounded-full px-4 shadow-lg shadow-primary/20 font-headline text-[10px] tracking-widest uppercase">
                       <Mail className="h-4 w-4 mr-2" />
                       Pesan
                     </Button>
                   </div>
                 )}
               </div>
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground mb-6">
-                 <button onClick={handleLike} className="flex items-center space-x-1 group focus:outline-none bg-muted/30 px-3 py-1.5 rounded-full hover:bg-muted/50 transition-colors">
-                  <Heart className={`h-5 w-5 transition-colors ${hasLiked ? 'text-red-500 fill-current' : 'group-hover:text-red-400'}`} />
-                  <span className={hasLiked ? 'text-foreground font-bold' : ''}>{project.likes?.length || 0} Suka</span>
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] font-headline tracking-widest font-bold text-muted-foreground mb-6">
+                 <button onClick={handleLike} className="flex items-center space-x-1 group focus:outline-none bg-muted/30 px-3 py-1.5 rounded-full hover:bg-muted/50 transition-colors uppercase">
+                  <Heart className={`h-4 w-4 transition-colors ${hasLiked ? 'text-red-500 fill-current' : 'group-hover:text-red-400'}`} />
+                  <span className={hasLiked ? 'text-foreground font-black' : ''}>{project.likes?.length || 0} Suka</span>
                 </button>
-                <div className="flex items-center space-x-1 bg-muted/30 px-3 py-1.5 rounded-full">
-                  <MessageCircle className="h-5 w-5" />
+                <div className="flex items-center space-x-1 bg-muted/30 px-3 py-1.5 rounded-full uppercase">
+                  <MessageCircle className="h-4 w-4" />
                   <span>{comments?.length || 0} Komentar</span>
                 </div>
                 {project.createdAt && (
-                    <span className="hidden sm:inline bg-muted/30 px-3 py-1.5 rounded-full">• Diterbitkan {project.createdAt.toDate().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                    <span className="hidden sm:inline bg-muted/30 px-3 py-1.5 rounded-full uppercase">• Diterbitkan {project.createdAt.toDate().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                 )}
               </div>
             </CardContent>
@@ -214,12 +213,12 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
 
           <Card className="my-8 border-none shadow-md bg-white">
             <CardContent className="p-8">
-              <h2 className="font-headline text-lg font-semibold mb-4 text-primary">Deskripsi</h2>
+              <h2 className="font-headline text-lg font-black mb-4 text-primary tracking-tighter">Deskripsi</h2>
               <p className="text-foreground/80 text-lg leading-relaxed whitespace-pre-wrap">{project.description}</p>
               <Separator className="my-8" />
               <div className="flex flex-wrap gap-2">
                 {project.tags.map(tag => (
-                  <Badge key={tag} variant="secondary" className="px-4 py-1 rounded-full hover:bg-primary hover:text-white transition-colors cursor-default">#{tag}</Badge>
+                  <Badge key={tag} variant="secondary" className="px-4 py-1 rounded-full hover:bg-primary hover:text-white transition-colors cursor-default font-headline text-[10px] tracking-widest uppercase">#{tag}</Badge>
                 ))}
               </div>
             </CardContent>
@@ -228,7 +227,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
           <Card id="comments" className="border-none shadow-md bg-white overflow-hidden">
             <div className="h-1.5 w-full bg-primary/10" />
             <CardContent className="p-8">
-              <h2 className="font-headline text-xl font-semibold mb-8">Diskusi ({comments?.length || 0})</h2>
+              <h2 className="font-headline text-xl font-black mb-8 tracking-tighter">Diskusi ({comments?.length || 0})</h2>
               
               {user ? (
                 <div className="flex space-x-4 mb-10">
@@ -256,7 +255,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
                 </div>
               ) : (
                 <div className="bg-primary/5 border border-primary/10 rounded-3xl p-6 text-center mb-10">
-                  <p className="text-muted-foreground">Silakan <Link href="/auth" className="text-primary font-bold hover:underline">Masuk</Link> untuk ikut berdiskusi dengan kreator.</p>
+                  <p className="font-headline text-xs tracking-widest font-bold text-muted-foreground uppercase">Silakan <Link href="/auth" className="text-primary font-black hover:underline">Masuk</Link> untuk ikut berdiskusi.</p>
                 </div>
               )}
 
@@ -276,8 +275,8 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
                     </Link>
                     <div className="flex-1 bg-muted/20 p-5 rounded-2xl group-hover:bg-muted/30 transition-colors">
                       <div className="flex items-center justify-between mb-2">
-                        <Link href={`/profile/${comment.author.username}`} className="font-bold hover:text-primary transition-colors">{comment.author.name}</Link>
-                        <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">
+                        <Link href={`/profile/${comment.author.username}`} className="font-headline text-sm font-black hover:text-primary transition-colors tracking-tight">{comment.author.name}</Link>
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold font-headline">
                           {comment.createdAt?.toDate().toLocaleDateString('id-ID')}
                         </p>
                       </div>
@@ -288,7 +287,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
                 {!loadingComments && comments?.length === 0 && (
                   <div className="text-center py-12">
                     <MessageCircle className="h-12 w-12 text-muted-foreground/30 mx-auto mb-4" />
-                    <p className="text-muted-foreground italic">Belum ada komentar. Jadilah yang pertama memberikan apresiasi!</p>
+                    <p className="text-muted-foreground italic font-headline text-sm tracking-wide">Belum ada komentar. Jadilah yang pertama memberikan apresiasi!</p>
                   </div>
                 )}
               </div>
@@ -306,15 +305,15 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
                       <AvatarImage src={project.creator.avatarUrl || ''} alt={project.creator.name || ''} />
                       <AvatarFallback className="text-2xl">{project.creator.name?.charAt(0)}</AvatarFallback>
                     </Avatar>
-                    <p className="font-headline font-bold text-xl group-hover:text-primary transition-colors">{project.creator.name}</p>
-                    <p className="text-sm text-muted-foreground">@{project.creator.username}</p>
+                    <p className="font-headline font-black text-xl group-hover:text-primary transition-colors tracking-tighter">{project.creator.name}</p>
+                    <p className="font-headline text-[10px] text-muted-foreground uppercase tracking-widest font-bold">@{project.creator.username}</p>
                   </Link>
                   {user?.uid !== project.creator.uid && (
                     <div className="space-y-3">
-                      <Button onClick={handleFollow} variant={isFollowing ? 'secondary' : 'default'} className="w-full rounded-full shadow-lg shadow-primary/10 py-6 text-md font-bold">
+                      <Button onClick={handleFollow} variant={isFollowing ? 'secondary' : 'default'} className="w-full rounded-full shadow-lg shadow-primary/10 py-6 text-xs font-headline tracking-widest font-black uppercase">
                         {isFollowing ? <><Check className="h-4 w-4 mr-2" /> Diikuti</> : <><UserPlus className="h-4 w-4 mr-2" /> Ikuti Kreator</>}
                       </Button>
-                      <Button onClick={() => setIsMessageDialogOpen(true)} variant="outline" className="w-full rounded-full py-6 text-md border-primary/20 hover:bg-primary/5">
+                      <Button onClick={() => setIsMessageDialogOpen(true)} variant="outline" className="w-full rounded-full py-6 text-xs font-headline tracking-widest font-black border-primary/20 hover:bg-primary/5 uppercase">
                         Kirim Pesan
                       </Button>
                     </div>
@@ -324,7 +323,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
             
             {userProjects.length > 0 && (
                 <div>
-                    <h3 className="font-headline font-bold mb-4 text-xs text-primary tracking-widest uppercase">Karya Lainnya dari Kreator</h3>
+                    <h3 className="font-headline font-black mb-4 text-[10px] text-primary tracking-[0.2em] uppercase">Karya Lainnya</h3>
                     <div className="grid grid-cols-1 gap-6">
                         {userProjects.map(p => <ProjectCard key={p.id} project={p} className="h-auto" />)}
                     </div>

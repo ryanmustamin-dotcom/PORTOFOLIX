@@ -117,19 +117,19 @@ export default function AuthPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-6">
             <Link href="/" className="inline-flex items-center">
-                <span className="font-bold font-headline text-3xl text-primary">PORTOFOLIX</span>
+                <span className="font-black font-headline text-4xl text-primary tracking-tighter">PORTOFOLIX</span>
             </Link>
-            <p className="text-muted-foreground mt-2">Show, Connect, Inspire.</p>
+            <p className="font-headline text-muted-foreground mt-2 text-xs tracking-widest font-bold">Show, Connect, Inspire.</p>
         </div>
         <Tabs defaultValue="sign-in" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="sign-in">Sign In</TabsTrigger>
-            <TabsTrigger value="sign-up">Sign Up</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 bg-muted/50 rounded-full p-1 h-12">
+            <TabsTrigger value="sign-in" className="rounded-full font-headline text-xs tracking-widest">Sign In</TabsTrigger>
+            <TabsTrigger value="sign-up" className="rounded-full font-headline text-xs tracking-widest">Sign Up</TabsTrigger>
           </TabsList>
           <TabsContent value="sign-in">
-            <Card>
-              <CardHeader>
-                <CardTitle>Welcome Back</CardTitle>
+            <Card className="border-none shadow-2xl rounded-3xl overflow-hidden">
+              <CardHeader className="text-center">
+                <CardTitle className="font-headline text-xl font-black">Welcome Back</CardTitle>
                 <CardDescription>Enter your credentials to access your account.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -142,19 +142,19 @@ export default function AuthPage() {
                     <Label htmlFor="password-signin">Password</Label>
                     <Input id="password-signin" type="password" required value={signinPassword} onChange={e => setSigninPassword(e.target.value)}/>
                   </div>
-                  <Button type="submit" className="w-full">Sign In</Button>
+                  <Button type="submit" className="w-full font-headline tracking-widest rounded-full py-6">Sign In</Button>
                 </form>
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
                     <span className="w-full border-t" />
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-muted-foreground">
+                    <span className="bg-background px-2 text-muted-foreground font-headline text-[10px] tracking-[0.2em] font-bold">
                       Or continue with
                     </span>
                   </div>
                 </div>
-                <Button variant="outline" className="w-full" onClick={handleGoogleSignIn}>
+                <Button variant="outline" className="w-full rounded-full py-6 font-headline tracking-widest" onClick={handleGoogleSignIn}>
                   <Chrome className="mr-2 h-4 w-4" />
                   Google
                 </Button>
@@ -162,9 +162,9 @@ export default function AuthPage() {
             </Card>
           </TabsContent>
           <TabsContent value="sign-up">
-            <Card>
-              <CardHeader>
-                <CardTitle>Create an Account</CardTitle>
+            <Card className="border-none shadow-2xl rounded-3xl overflow-hidden">
+              <CardHeader className="text-center">
+                <CardTitle className="font-headline text-xl font-black">Create an Account</CardTitle>
                 <CardDescription>It's quick and easy to get started.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -181,9 +181,9 @@ export default function AuthPage() {
                     <Label htmlFor="password-signup">Password</Label>
                     <Input id="password-signup" type="password" required value={signupPassword} onChange={e => setSignupPassword(e.target.value)} />
                   </div>
-                  <Button type="submit" className="w-full">Create Account</Button>
+                  <Button type="submit" className="w-full font-headline tracking-widest rounded-full py-6">Create Account</Button>
                 </form>
-                <p className="px-8 text-center text-sm text-muted-foreground">
+                <p className="px-8 text-center text-[10px] text-muted-foreground uppercase tracking-widest font-bold">
                     By signing up, you agree to our{' '}
                     <Link href="#" className="underline hover:text-primary">
                         Terms of Service

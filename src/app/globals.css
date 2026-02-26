@@ -58,5 +58,11 @@
 .font-headline {
   font-family: 'Orbitron', sans-serif;
   text-transform: uppercase;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.02em;
+}
+
+.font-headline-wide {
+  font-family: 'Orbitron', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }

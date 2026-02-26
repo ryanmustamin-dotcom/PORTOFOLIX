@@ -61,10 +61,10 @@ export default function Home() {
   return (
     <div className="container py-8 px-4 md:px-8">
       <section className="text-center mb-12 py-10">
-        <h1 className="font-headline text-4xl md:text-6xl font-bold tracking-tight mb-4 text-primary">
+        <h1 className="font-headline text-4xl md:text-6xl font-black tracking-tighter mb-4 text-primary">
           DISCOVER EXTRAORDINARY WORKS
         </h1>
-        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+        <p className="font-headline text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto font-medium tracking-wide">
           Show, Connect, Inspire.
         </p>
       </section>
@@ -76,7 +76,7 @@ export default function Home() {
                 variant={selectedCategory === null ? "secondary" : "ghost"} 
                 size="sm"
                 onClick={() => setSelectedCategory(null)}
-                className="rounded-full px-6"
+                className="rounded-full px-6 font-headline text-xs tracking-widest"
               >
                 Semua
               </Button>
@@ -86,7 +86,7 @@ export default function Home() {
                   key={category} 
                   variant={selectedCategory === category ? "secondary" : "ghost"} 
                   size="sm" 
-                  className="whitespace-nowrap rounded-full px-6"
+                  className="whitespace-nowrap rounded-full px-6 font-headline text-xs tracking-widest"
                   onClick={() => setSelectedCategory(category)}
                 >
                   {category}
@@ -114,8 +114,8 @@ export default function Home() {
         <>
           {searchQuery && (
             <div className="mb-6">
-              <p className="text-muted-foreground">
-                Hasil pencarian untuk: <span className="font-bold text-foreground">"{searchQuery}"</span>
+              <p className="text-muted-foreground font-headline text-sm tracking-wide">
+                Hasil pencarian untuk: <span className="font-black text-foreground">"{searchQuery}"</span>
               </p>
             </div>
           )}
@@ -128,11 +128,11 @@ export default function Home() {
             </div>
           ) : (
             <div className="text-center py-20 bg-muted/5 rounded-3xl border-2 border-dashed">
-              <p className="text-muted-foreground text-lg">Tidak ada karya yang ditemukan.</p>
+              <p className="text-muted-foreground text-lg font-headline">Tidak ada karya yang ditemukan.</p>
               <Button variant="link" onClick={() => {
                 setSelectedCategory(null);
                 window.history.pushState({}, '', '/');
-              }} className="mt-2 text-primary font-bold">
+              }} className="mt-2 text-primary font-black font-headline tracking-tighter">
                 Lihat semua karya
               </Button>
             </div>
