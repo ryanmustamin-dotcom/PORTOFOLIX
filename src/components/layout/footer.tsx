@@ -11,7 +11,7 @@ export default function Footer() {
           </div>
           <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm font-bold font-subheadline uppercase tracking-widest">
             <Link href="/about" className="hover:text-primary transition-colors">Tentang</Link>
-            <Link href="#" className="hover:text-primary transition-colors">Karir</Link>
+            <Link href="/career" className="hover:text-primary transition-colors">Karir</Link>
             <Link href="/privacy" className="hover:text-primary transition-colors">Kebijakan Privasi</Link>
             <Link href="/terms" className="hover:text-primary transition-colors">Syarat & Ketentuan</Link>
           </nav>
