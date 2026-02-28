@@ -130,8 +130,8 @@ export default function ProfilePage({ params }: { params: { username: string } }
     return (
       <div className="flex justify-center items-center h-[60vh]">
         <div className="text-center">
-          <Loader2 className="h-12 w-12 animate-spin text-primary inline-block mb-4" />
-          <p className="font-headline text-lg text-muted-foreground uppercase tracking-widest font-black">Memuat Profil...</p>
+          <Loader2 className="h-10 w-10 md:h-12 md:w-12 animate-spin text-primary inline-block mb-4" />
+          <p className="font-headline text-sm md:text-lg text-muted-foreground uppercase tracking-widest font-black">Memuat Profil...</p>
         </div>
       </div>
     );
@@ -142,7 +142,7 @@ export default function ProfilePage({ params }: { params: { username: string } }
   const SocialLink = ({ href, icon, children }: { href?: string, icon: React.ReactNode, children: React.ReactNode }) => {
     if (!href) return null;
     return (
-      <Link href={href} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 hover:text-primary transition-colors font-subheadline text-xs tracking-widest font-bold uppercase">
+      <Link href={href} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 hover:text-primary transition-colors font-subheadline text-[10px] md:text-xs tracking-widest font-bold uppercase">
         {icon}
         <span>{children}</span>
       </Link>
@@ -150,7 +150,7 @@ export default function ProfilePage({ params }: { params: { username: string } }
   }
 
   return (
-    <div className="container py-8 px-4 md:px-8">
+    <div className="container py-6 md:py-8 px-4 md:px-8">
       {isOwnProfile && user && (
         <EditProfileDialog 
             userProfile={user}
@@ -176,7 +176,7 @@ export default function ProfilePage({ params }: { params: { username: string } }
       />
 
       <Card className="mb-8 overflow-hidden border-none shadow-xl bg-white rounded-3xl">
-        <div className="h-48 md:h-64 bg-muted relative">
+        <div className="h-40 md:h-64 bg-muted relative">
           <Image 
             src={user.headerUrl || "https://picsum.photos/seed/headerbg/1200/400"} 
             alt="Profile banner" 
@@ -185,24 +185,24 @@ export default function ProfilePage({ params }: { params: { username: string } }
             data-ai-hint="abstract background" 
           />
         </div>
-        <div className="px-6 pb-6 pt-0">
-          <div className="flex flex-col md:flex-row items-start md:items-end gap-6">
-            <div className="-mt-16 md:-mt-20 relative z-10 shrink-0">
-              <Avatar className="h-32 w-32 md:h-40 md:w-40 border-4 border-white shadow-xl">
+        <div className="px-4 md:px-6 pb-6 pt-0">
+          <div className="flex flex-col md:flex-row items-start md:items-end gap-4 md:gap-6">
+            <div className="-mt-12 md:-mt-20 relative z-10 shrink-0 mx-auto md:mx-0">
+              <Avatar className="h-24 w-24 md:h-40 md:w-40 border-4 border-white shadow-xl">
                 <AvatarImage src={user.avatarUrl ?? undefined} alt={user.name ?? ''} />
-                <AvatarFallback className="text-2xl font-headline font-black">{user.name?.slice(0, 2).toUpperCase() ?? '??'}</AvatarFallback>
+                <AvatarFallback className="text-xl md:text-2xl font-headline font-black">{user.name?.slice(0, 2).toUpperCase() ?? '??'}</AvatarFallback>
               </Avatar>
             </div>
             
-            <div className="flex-grow pt-4 md:pt-0">
-              <h1 className="font-headline text-3xl font-black tracking-tighter uppercase">{user.name}</h1>
-              <p className="font-subheadline text-lg text-muted-foreground uppercase tracking-tight font-medium">@{user.username}</p>
-              {user.status && <p className="font-subheadline text-xs font-black text-primary mt-1 tracking-widest uppercase">{user.status}</p>}
+            <div className="flex-grow pt-2 md:pt-0 text-center md:text-left w-full">
+              <h1 className="font-headline text-2xl md:text-3xl font-black tracking-tighter uppercase">{user.name}</h1>
+              <p className="font-subheadline text-sm md:text-lg text-muted-foreground uppercase tracking-tight font-medium">@{user.username}</p>
+              {user.status && <p className="font-subheadline text-[10px] md:text-xs font-black text-primary mt-1 tracking-widest uppercase">{user.status}</p>}
               
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-muted-foreground mt-3 font-subheadline text-[10px] tracking-widest uppercase font-bold">
+              <div className="flex flex-wrap justify-center md:justify-start items-center gap-x-4 md:gap-x-6 gap-y-2 text-muted-foreground mt-4 md:mt-3 font-subheadline text-[9px] md:text-[10px] tracking-widest uppercase font-bold">
                 {user.location && (
                     <div className="flex items-center space-x-1.5">
-                        <MapPin className="h-4 w-4" />
+                        <MapPin className="h-3 w-3 md:h-4 md:w-4" />
                         <span>{user.location}</span>
                     </div>
                 )}
@@ -221,20 +221,20 @@ export default function ProfilePage({ params }: { params: { username: string } }
               </div>
             </div>
 
-            <div className="flex items-center space-x-2 mt-4 md:mt-0 self-start md:self-end shrink-0 pb-1">
+            <div className="flex items-center justify-center space-x-2 mt-4 md:mt-0 w-full md:w-auto shrink-0 pb-1">
               {isOwnProfile ? (
-                <Button onClick={() => setIsEditDialogOpen(true)} className="rounded-full px-8 py-6 font-bold tracking-widest uppercase shadow-lg shadow-primary/20">Edit Profil</Button>
+                <Button onClick={() => setIsEditDialogOpen(true)} className="flex-1 md:flex-none rounded-full px-6 md:px-8 py-5 md:py-6 font-bold tracking-widest uppercase shadow-lg shadow-primary/20 text-[10px] md:text-xs">Edit Profil</Button>
               ) : (
                 <>
-                  <Button onClick={handleFollow} variant={isFollowing ? 'secondary' : 'default'} className="rounded-full px-8 py-6 font-bold tracking-widest uppercase shadow-lg">
+                  <Button onClick={handleFollow} variant={isFollowing ? 'secondary' : 'default'} className="flex-1 md:flex-none rounded-full px-6 md:px-8 py-5 md:py-6 font-bold tracking-widest uppercase shadow-lg text-[10px] md:text-xs">
                     {isFollowing ? (
-                        <><Check className="h-4 w-4 mr-2" /> Mengikuti</>
+                        <><Check className="h-3 w-3 md:h-4 md:w-4 mr-1.5" /> Mengikuti</>
                     ) : (
-                        <><UserPlus className="h-4 w-4 mr-2" /> Ikuti</>
+                        <><UserPlus className="h-3 w-3 md:h-4 md:w-4 mr-1.5" /> Ikuti</>
                     )}
                   </Button>
-                  <Button variant="outline" className="rounded-full px-8 py-6 font-bold tracking-widest uppercase" onClick={() => setIsMessageDialogOpen(true)}>
-                    <Mail className="h-4 w-4 mr-2" />
+                  <Button variant="outline" className="flex-1 md:flex-none rounded-full px-6 md:px-8 py-5 md:py-6 font-bold tracking-widest uppercase text-[10px] md:text-xs" onClick={() => setIsMessageDialogOpen(true)}>
+                    <Mail className="h-3 w-3 md:h-4 md:w-4 mr-1.5" />
                     Pesan
                   </Button>
                 </>
@@ -245,9 +245,9 @@ export default function ProfilePage({ params }: { params: { username: string } }
       </Card>
       
       <Tabs defaultValue="work" className="w-full">
-        <TabsList className="mb-8 bg-muted/50 p-1 rounded-full w-fit">
-          <TabsTrigger value="work" className="rounded-full px-10 py-2 font-subheadline text-xs tracking-widest uppercase font-bold">Karya</TabsTrigger>
-          <TabsTrigger value="about" className="rounded-full px-10 py-2 font-subheadline text-xs tracking-widest uppercase font-bold">Tentang</TabsTrigger>
+        <TabsList className="mb-6 md:mb-8 bg-muted/50 p-1 rounded-full w-full md:w-fit flex justify-center overflow-x-auto no-scrollbar">
+          <TabsTrigger value="work" className="flex-1 md:flex-none rounded-full px-6 md:px-10 py-2 font-subheadline text-[10px] md:text-xs tracking-widest uppercase font-bold">Karya</TabsTrigger>
+          <TabsTrigger value="about" className="flex-1 md:flex-none rounded-full px-6 md:px-10 py-2 font-subheadline text-[10px] md:text-xs tracking-widest uppercase font-bold">Tentang</TabsTrigger>
         </TabsList>
         
         <TabsContent value="work">
@@ -257,16 +257,16 @@ export default function ProfilePage({ params }: { params: { username: string } }
             </div>
           )}
           {!isLoadingProjects && userProjects && userProjects.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
               {userProjects.map(project => (
                 <ProjectCard key={project.id} project={project} />
               ))}
             </div>
           ) : (
             !isLoadingProjects && (
-              <div className="text-center py-24 border-2 border-dashed rounded-3xl bg-muted/5">
-                <h3 className="text-xl font-black text-muted-foreground font-headline tracking-tighter uppercase">Belum ada karya</h3>
-                <p className="font-subheadline text-xs tracking-widest font-bold text-muted-foreground mt-2 uppercase">Kreator ini belum mengunggah proyek apapun.</p>
+              <div className="text-center py-20 md:py-24 border-2 border-dashed rounded-3xl bg-muted/5 px-4">
+                <h3 className="text-lg md:text-xl font-black text-muted-foreground font-headline tracking-tighter uppercase">Belum ada karya</h3>
+                <p className="font-subheadline text-[9px] md:text-xs tracking-widest font-bold text-muted-foreground mt-2 uppercase">Kreator ini belum mengunggah proyek apapun.</p>
               </div>
             )
           )}
@@ -274,19 +274,19 @@ export default function ProfilePage({ params }: { params: { username: string } }
         
         <TabsContent value="about">
           <Card className="border-none shadow-lg rounded-3xl">
-            <CardContent className="p-10 grid grid-cols-1 md:grid-cols-3 gap-12">
+            <CardContent className="p-6 md:p-10 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
                 <div className="md:col-span-2">
-                    <h2 className="font-subheadline text-xl font-black mb-6 text-primary tracking-tighter uppercase">Biografi</h2>
-                    <p className="text-foreground/80 text-lg leading-relaxed whitespace-pre-wrap font-subheadline">{user.bio || 'Pengguna ini belum menulis biografi.'}</p>
+                    <h2 className="font-subheadline text-lg md:text-xl font-black mb-4 md:mb-6 text-primary tracking-tighter uppercase">Biografi</h2>
+                    <p className="text-foreground/80 text-sm md:text-lg leading-relaxed whitespace-pre-wrap font-subheadline">{user.bio || 'Pengguna ini belum menulis biografi.'}</p>
                 </div>
                 <div>
-                     <h2 className="font-subheadline text-xl font-black mb-6 text-primary tracking-tighter uppercase">Media Sosial</h2>
-                     <div className="space-y-5 text-muted-foreground">
-                        <SocialLink href={user.socialLinks?.twitter} icon={<Twitter className="h-5 w-5" />}>Twitter</SocialLink>
-                        <SocialLink href={user.socialLinks?.instagram} icon={<Instagram className="h-5 w-5" />}>Instagram</SocialLink>
-                        <SocialLink href={user.socialLinks?.github} icon={<Github className="h-5 w-5" />}>GitHub</SocialLink>
+                     <h2 className="font-subheadline text-lg md:text-xl font-black mb-4 md:mb-6 text-primary tracking-tighter uppercase">Media Sosial</h2>
+                     <div className="space-y-4 md:space-y-5 text-muted-foreground">
+                        <SocialLink href={user.socialLinks?.twitter} icon={<Twitter className="h-4 w-4 md:h-5 md:w-5" />}>Twitter</SocialLink>
+                        <SocialLink href={user.socialLinks?.instagram} icon={<Instagram className="h-4 w-4 md:h-5 md:w-5" />}>Instagram</SocialLink>
+                        <SocialLink href={user.socialLinks?.github} icon={<Github className="h-4 w-4 md:h-5 md:w-5" />}>GitHub</SocialLink>
                         {!user.socialLinks?.twitter && !user.socialLinks?.instagram && !user.socialLinks?.github && (
-                          <p className="font-subheadline text-[10px] tracking-widest uppercase font-bold text-muted-foreground/50">Tidak ada tautan tersedia.</p>
+                          <p className="font-subheadline text-[9px] md:text-[10px] tracking-widest uppercase font-bold text-muted-foreground/50">Tidak ada tautan tersedia.</p>
                         )}
                      </div>
                 </div>
