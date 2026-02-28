@@ -41,18 +41,10 @@ export default function AboutPage() {
             </p>
           </div>
           
-          <div className="mt-12 pt-8 border-t border-muted flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="text-center md:text-left">
+          <div className="mt-12 pt-8 border-t border-muted flex flex-col items-center">
+            <div className="text-center">
               <p className="font-headline text-xs font-black text-primary tracking-widest uppercase mb-1">Lokasi</p>
               <p className="font-subheadline font-bold uppercase text-sm">Subang, Jawa Barat</p>
-            </div>
-            <div className="text-center md:text-left">
-              <p className="font-headline text-xs font-black text-primary tracking-widest uppercase mb-1">Visi</p>
-              <p className="font-subheadline font-bold uppercase text-sm">Kreativitas Berlandaskan Adab</p>
-            </div>
-            <div className="text-center md:text-left">
-              <p className="font-headline text-xs font-black text-primary tracking-widest uppercase mb-1">Kontak</p>
-              <p className="font-subheadline font-bold uppercase text-sm">info@assyifa-boardingschool.id</p>
             </div>
           </div>
         </CardContent>
