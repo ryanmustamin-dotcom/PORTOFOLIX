@@ -22,6 +22,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Badge } from './ui/badge';
 import { categories } from '@/lib/categories';
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
 const formSchema = z.object({
   title: z.string().min(3, 'Judul minimal 3 karakter.'),
   category: z.string().min(1, 'Pilih kategori.'),
@@ -61,6 +63,18 @@ export default function UploadForm() {
     const files = e.target.files;
     if (files) {
       const newFiles = Array.from(files);
+      
+      // Check file sizes
+      const oversizedFiles = newFiles.filter(file => file.size > MAX_FILE_SIZE);
+      if (oversizedFiles.length > 0) {
+        toast({
+          variant: 'destructive',
+          title: 'File Terlalu Besar',
+          description: `Beberapa file melebihi batas 5MB. Silakan pilih file yang lebih kecil.`,
+        });
+        return;
+      }
+
       setSelectedFiles(prev => [...prev, ...newFiles]);
       
       const newPreviews = newFiles.map(file => URL.createObjectURL(file));
@@ -131,7 +145,6 @@ export default function UploadForm() {
     try {
         const mediaUrls: string[] = [];
         
-        // Unggah setiap file ke Firebase Storage
         for (const file of selectedFiles) {
             const fileRef = ref(storage, `projects/${user.uid}/${Date.now()}-${file.name}`);
             const uploadResult = await uploadBytes(fileRef, file);
@@ -145,7 +158,7 @@ export default function UploadForm() {
             description: values.descriptionDraft || values.briefDescription,
             tags: values.suggestedTags || [],
             keywords: values.suggestedKeywords || [],
-            thumbnailUrl: mediaUrls[0], // Gunakan gambar pertama sebagai thumbnail
+            thumbnailUrl: mediaUrls[0],
             mediaUrls,
             likes: [],
             createdAt: serverTimestamp(),
@@ -186,7 +199,7 @@ export default function UploadForm() {
                 <ImageIcon className="h-5 w-5 text-primary" />
                 Media Proyek
             </CardTitle>
-            <CardDescription>Unggah gambar karya terbaik Anda.</CardDescription>
+            <CardDescription>Unggah gambar karya terbaik Anda (Maks. 5MB per file).</CardDescription>
           </CardHeader>
           <CardContent>
               <div 
@@ -197,7 +210,7 @@ export default function UploadForm() {
                     <UploadCloud className="h-10 w-10 text-primary" />
                 </div>
                 <p className="text-lg font-medium">Klik untuk pilih file</p>
-                <p className="text-sm text-muted-foreground mt-1">Mendukung format JPG, PNG, GIF.</p>
+                <p className="text-sm text-muted-foreground mt-1">Mendukung format JPG, PNG, GIF. Maksimal 5MB.</p>
                 <input 
                     type="file"
                     className="hidden"
