@@ -12,7 +12,7 @@ export default function Footer() {
           <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm font-bold font-subheadline uppercase tracking-widest">
             <Link href="/about" className="hover:text-primary transition-colors">Tentang</Link>
             <Link href="#" className="hover:text-primary transition-colors">Karir</Link>
-            <Link href="#" className="hover:text-primary transition-colors">Kebijakan Privasi</Link>
+            <Link href="/privacy" className="hover:text-primary transition-colors">Kebijakan Privasi</Link>
             <Link href="/terms" className="hover:text-primary transition-colors">Syarat & Ketentuan</Link>
           </nav>
           <p className="text-xs font-subheadline font-bold text-muted-foreground uppercase tracking-wider">&copy; {currentYear} PORTOFOLIX. SMK-IT As-Syifa.</p>
