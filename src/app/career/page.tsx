@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
-import { Briefcase, Users, Phone } from 'lucide-react';
+import { Palette, Code, Handshake, Phone } from 'lucide-react';
 
 export default function CareerPage() {
   return (
@@ -13,63 +13,60 @@ export default function CareerPage() {
         <div className="h-1.5 w-24 bg-primary mx-auto rounded-full" />
       </section>
 
-      <Card className="border-none shadow-2xl overflow-hidden rounded-3xl bg-white">
-        <CardContent className="p-8 md:p-12">
-          <div className="flex items-center gap-4 mb-8 pb-4 border-b border-muted">
-            <div className="bg-primary/10 p-3 rounded-2xl">
-              <Briefcase className="h-8 w-8 text-primary" />
-            </div>
-            <h2 className="font-headline text-xl font-black tracking-tighter uppercase">
-              Menjembatani Talenta Muda
-            </h2>
-          </div>
+      <div className="space-y-8">
+        <p className="font-subheadline text-lg md:text-xl text-center leading-relaxed text-foreground/80 mb-12">
+          Halaman ini didedikasikan untuk menjembatani talenta muda SMK-IT As-Syifa dengan dunia industri. Kami menyiapkan lulusan untuk menempati posisi strategis seperti:
+        </p>
 
-          <div className="space-y-10">
-            <p className="font-subheadline text-lg md:text-xl leading-relaxed text-foreground/80">
-              Halaman ini didedikasikan untuk menjembatani talenta muda SMK-IT As-Syifa dengan dunia industri. Kami menyiapkan lulusan untuk menempati posisi strategis seperti:
-            </p>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="bg-muted/30 p-6 rounded-2xl border-l-4 border-primary">
-                <h3 className="font-headline text-sm font-black text-primary mb-3 uppercase tracking-tighter">Creative Division</h3>
-                <p className="font-subheadline text-sm leading-relaxed text-foreground/70">
-                  Graphic Designer, UI/UX Designer, Video Editor, & Creative Content Creator, dll.
-                </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card className="border-none shadow-lg hover:shadow-xl transition-shadow rounded-3xl overflow-hidden bg-white">
+            <CardContent className="p-8">
+              <div className="bg-primary/10 w-12 h-12 rounded-2xl flex items-center justify-center mb-6">
+                <Palette className="h-6 w-6 text-primary" />
               </div>
-
-              <div className="bg-muted/30 p-6 rounded-2xl border-l-4 border-accent">
-                <h3 className="font-headline text-sm font-black text-accent mb-3 uppercase tracking-tighter">Technical Division</h3>
-                <p className="font-subheadline text-sm leading-relaxed text-foreground/70">
-                  Web Developer, Full-stack Programmer, & Software Quality Assurance, dll.
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-muted/30 p-6 rounded-2xl border-l-4 border-foreground">
-              <div className="flex items-center gap-2 mb-3">
-                <Users className="h-5 w-5 text-foreground" />
-                <h3 className="font-headline text-sm font-black text-foreground uppercase tracking-tighter">Kemitraan Industri</h3>
-              </div>
+              <h3 className="font-headline text-lg font-black text-primary mb-4 uppercase tracking-tighter">Creative Division</h3>
               <p className="font-subheadline text-sm leading-relaxed text-foreground/70">
-                Kami membuka peluang kolaborasi bagi perusahaan untuk program Praktik Kerja Lapangan (PKL), kunjungan industri, serta rekrutmen lulusan (Bursa Kerja Khusus).
+                Graphic Designer, UI/UX Designer, Video Editor, & Creative Content Creator, dll.
               </p>
-            </div>
+            </CardContent>
+          </Card>
 
-            <div className="flex flex-col items-center justify-center p-8 bg-primary/5 rounded-3xl border border-primary/10">
-              <div className="flex items-center gap-3 mb-2">
-                <Phone className="h-5 w-5 text-primary" />
-                <p className="font-headline text-xs font-black text-primary tracking-widest uppercase">Kontak Informasi</p>
+          <Card className="border-none shadow-lg hover:shadow-xl transition-shadow rounded-3xl overflow-hidden bg-white">
+            <CardContent className="p-8">
+              <div className="bg-accent/10 w-12 h-12 rounded-2xl flex items-center justify-center mb-6">
+                <Code className="h-6 w-6 text-accent" />
               </div>
-              <p className="font-subheadline text-2xl font-black text-foreground tracking-tighter">
-                081386410422
+              <h3 className="font-headline text-lg font-black text-accent mb-4 uppercase tracking-tighter">Technical Division</h3>
+              <p className="font-subheadline text-sm leading-relaxed text-foreground/70">
+                Web Developer, Full-stack Programmer, & Software Quality Assurance, dll.
               </p>
-              <p className="font-subheadline text-xs text-muted-foreground mt-2 uppercase tracking-widest font-bold">
-                Hubungi kami untuk informasi lebih lanjut
-              </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        <Card className="border-none shadow-lg hover:shadow-xl transition-shadow rounded-3xl overflow-hidden bg-white">
+          <CardContent className="p-8">
+            <div className="flex flex-col md:flex-row md:items-center gap-8">
+              <div className="bg-muted w-16 h-16 rounded-2xl flex items-center justify-center shrink-0">
+                <Handshake className="h-8 w-8 text-foreground" />
+              </div>
+              <div>
+                <h3 className="font-headline text-lg font-black text-foreground mb-4 uppercase tracking-tighter">Kemitraan Industri</h3>
+                <p className="font-subheadline text-sm leading-relaxed text-foreground/70">
+                  Kami membuka peluang kolaborasi bagi perusahaan untuk program Praktik Kerja Lapangan (PKL), kunjungan industri, serta rekrutmen lulusan (Bursa Kerja Khusus).
+                </p>
+              </div>
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+
+        <div className="mt-12 p-10 bg-primary rounded-3xl text-white shadow-2xl shadow-primary/30 flex flex-col items-center text-center">
+          <Phone className="h-10 w-10 mb-6" />
+          <h2 className="font-headline text-2xl font-black mb-2 uppercase tracking-tighter">Hubungi Kami</h2>
+          <p className="font-subheadline text-3xl font-black tracking-tighter mb-4">081386410422</p>
+          <p className="font-subheadline text-sm opacity-80 uppercase tracking-widest font-bold">Informasi Lebih Lanjut & Kolaborasi</p>
+        </div>
+      </div>
     </div>
   );
 }
