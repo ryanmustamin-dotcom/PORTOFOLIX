@@ -16,28 +16,41 @@ export default function AboutPage() {
       <Card className="border-none shadow-2xl overflow-hidden rounded-3xl bg-white">
         <div className="relative h-64 md:h-96 w-full">
           <Image
-            src="https://picsum.photos/seed/dkv-school/1200/600"
+            src="https://picsum.photos/seed/dkv-school-2/1200/600"
             alt="DKV SMK-IT As-Syifa"
             fill
             className="object-cover"
-            data-ai-hint="creative classroom"
+            data-ai-hint="modern school"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-8">
             <p className="font-headline text-white text-xl font-bold tracking-widest uppercase">
-              DKV SMK-IT As-Syifa Boarding School
+              SMK-IT As-Syifa Boarding School
             </p>
           </div>
         </div>
         <CardContent className="p-8 md:p-12">
-          <div className="space-y-6">
-            <p className="font-subheadline text-lg md:text-xl leading-relaxed text-foreground/80 first-letter:text-5xl first-letter:font-black first-letter:text-primary first-letter:mr-3 first-letter:float-left">
-              Selamat datang di etalase kreatif Jurusan DKV SMK-IT As-Syifa Boarding School. Di bawah bimbingan tenaga pendidik yang berdedikasi, kami mengombinasikan ketajaman teknologi Multimedia dengan nilai-nilai adab.
-            </p>
+          <div className="space-y-8">
             <p className="font-subheadline text-lg md:text-xl leading-relaxed text-foreground/80">
-              Sebagai guru pengampu jurusan DKV, misi kami adalah mencetak kreator muda yang tidak hanya mahir secara teknis dalam desain, video, dan fotografi, tetapi juga memiliki integritas tinggi.
+              SMK-IT As-Syifa Boarding School adalah institusi pendidikan kejuruan berbasis teknologi informasi yang mengintegrasikan nilai-nilai Islam dengan kurikulum industri modern. Kami berfokus pada pengembangan talenta digital melalui dua program keahlian utama:
             </p>
-            <p className="font-subheadline text-lg md:text-xl leading-relaxed text-foreground/80">
-              Di SMK-IT As-Syifa, kami percaya bahwa karya visual adalah media dakwah dan komunikasi yang sangat kuat di era digital.
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+              <div className="bg-muted/30 p-6 rounded-2xl border-l-4 border-primary">
+                <h3 className="font-headline text-sm font-black text-primary mb-3 uppercase tracking-tighter">1. Desain Komunikasi Visual (DKV)</h3>
+                <p className="font-subheadline text-sm leading-relaxed text-foreground/70">
+                  Menitikberatkan pada penguasaan media kreatif, desain grafis, fotografi, videografi, dan multimedia interaktif, dll.
+                </p>
+              </div>
+              <div className="bg-muted/30 p-6 rounded-2xl border-l-4 border-accent">
+                <h3 className="font-headline text-sm font-black text-accent mb-3 uppercase tracking-tighter">2. Rekayasa Perangkat Lunak (RPL)</h3>
+                <p className="font-subheadline text-sm leading-relaxed text-foreground/70">
+                  Berfokus pada pengembangan perangkat lunak, pemrograman web, aplikasi mobile, dan manajemen basis data, dll.
+                </p>
+              </div>
+            </div>
+
+            <p className="font-subheadline text-lg md:text-xl leading-relaxed text-foreground/80 pt-4">
+              Sebagai bagian dari tenaga pendidik Multimedia di jurusan DKV, kami berkomitmen untuk mencetak lulusan yang kompeten secara teknis dan memiliki karakter kepemimpinan yang kuat di era digital.
             </p>
           </div>
           
