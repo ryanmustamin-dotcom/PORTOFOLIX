@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useCollection, useFirestore } from '@/firebase';
 import { collection, query, orderBy, where } from 'firebase/firestore';
@@ -12,7 +12,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { sampleProjects } from '@/lib/sample-data';
 import ProjectDetailsDialog from '@/components/project-details-dialog';
 
-export default function Home() {
+function HomeContent() {
   const firestore = useFirestore();
   const searchParams = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -67,7 +67,7 @@ export default function Home() {
   };
 
   return (
-    <div className="container py-8 px-4 md:px-8">
+    <>
       <section className="text-center mb-8 py-6 md:py-12">
         <h1 className="font-headline text-3xl sm:text-4xl md:text-6xl font-black tracking-tighter mb-4 uppercase leading-none px-2">
           <span className="text-black">DISCOVER</span> <span className="text-primary">EXTRAORDINARY</span> <span className="text-black">WORKS</span>
@@ -153,6 +153,20 @@ export default function Home() {
         isOpen={isDialogOpen} 
         onOpenChange={setIsDialogOpen} 
       />
+    </>
+  );
+}
+
+export default function Home() {
+  return (
+    <div className="container py-8 px-4 md:px-8">
+      <Suspense fallback={
+        <div className="flex justify-center items-center py-20">
+          <Skeleton className="h-12 w-12 rounded-full" />
+        </div>
+      }>
+        <HomeContent />
+      </Suspense>
     </div>
   );
 }
