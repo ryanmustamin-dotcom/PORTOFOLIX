@@ -48,6 +48,7 @@ export default function Header() {
           </Link>
           <nav className="hidden md:flex items-center space-x-6 text-sm font-bold uppercase tracking-wider">
             <Link href="/" className="transition-colors hover:text-primary text-foreground/70">Jelajahi</Link>
+            <Link href="/about" className="transition-colors hover:text-primary text-foreground/70">Tentang</Link>
           </nav>
         </div>
 
@@ -57,7 +58,7 @@ export default function Header() {
             placeholder="Cari karya, kreator..." 
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
-            className="flex h-10 w-full rounded-full border border-input bg-muted/40 px-3 py-2 text-sm pl-10 focus:bg-white transition-all outline-none focus:ring-2 focus:ring-primary/20" 
+            className="flex h-10 w-full rounded-full border border-input bg-muted/40 px-3 py-2 text-sm pl-10 focus:bg-white transition-all outline-none focus:ring-2 focus:ring-primary/20 font-subheadline" 
           />
         </form>
 
@@ -65,7 +66,7 @@ export default function Header() {
           {isLoggedIn && userProfile ? (
             <>
               <Link href="/upload" className="hidden sm:block">
-                <Button className="rounded-full px-6 shadow-lg shadow-primary/20">
+                <Button className="rounded-full px-6 shadow-lg shadow-primary/20 font-bold uppercase tracking-widest text-xs h-10">
                   <Upload className="mr-2 h-4 w-4" />
                   Unggah
                 </Button>
@@ -79,7 +80,7 @@ export default function Header() {
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56 mt-2 rounded-2xl p-2 shadow-xl border-none" align="end" forceMount>
+                <DropdownMenuContent className="w-56 mt-2 rounded-2xl p-2 shadow-xl border-none font-subheadline" align="end" forceMount>
                   <DropdownMenuLabel className="font-normal p-3">
                     <div className="flex flex-col space-y-1">
                       <p className="text-sm font-bold leading-none">{userProfile.name}</p>
@@ -89,20 +90,20 @@ export default function Header() {
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator className="bg-muted/50" />
-                  <DropdownMenuItem asChild className="rounded-xl cursor-pointer py-2.5">
+                  <DropdownMenuItem asChild className="rounded-xl cursor-pointer py-2.5 font-bold uppercase text-[10px] tracking-widest">
                     <Link href={`/profile/${userProfile.username}`} className="w-full flex items-center">
                       <User className="mr-2 h-4 w-4 text-primary" />
                       Profil Saya
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild className="rounded-xl cursor-pointer py-2.5">
+                  <DropdownMenuItem asChild className="rounded-xl cursor-pointer py-2.5 font-bold uppercase text-[10px] tracking-widest">
                     <Link href="/settings" className="w-full flex items-center">
                       <Settings className="mr-2 h-4 w-4 text-primary" />
                       Pengaturan
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator className="bg-muted/50" />
-                  <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive focus:bg-destructive/5 rounded-xl cursor-pointer py-2.5">
+                  <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive focus:bg-destructive/5 rounded-xl cursor-pointer py-2.5 font-bold uppercase text-[10px] tracking-widest">
                     <LogOut className="mr-2 h-4 w-4" />
                     Keluar
                   </DropdownMenuItem>
@@ -112,7 +113,7 @@ export default function Header() {
           ) : (
             !loading && (
               <Link href="/auth">
-                <Button variant="outline" className="rounded-full px-8 border-primary/30 hover:bg-primary/5 font-bold transition-all">Masuk</Button>
+                <Button variant="outline" className="rounded-full px-8 border-primary/30 hover:bg-primary/5 font-bold transition-all uppercase tracking-widest text-xs h-10 font-subheadline">Masuk</Button>
               </Link>
             )
           )}
@@ -125,7 +126,7 @@ export default function Header() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden border-t bg-white p-4 space-y-4 animate-in slide-in-from-top">
+        <div className="md:hidden border-t bg-white p-4 space-y-4 animate-in slide-in-from-top font-subheadline">
           <form onSubmit={handleSearch} className="relative w-full">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input 
@@ -135,10 +136,11 @@ export default function Header() {
               className="flex h-10 w-full rounded-full border border-input bg-muted/40 px-3 py-2 text-sm pl-10 focus:bg-white outline-none" 
             />
           </form>
-          <nav className="flex flex-col space-y-2 font-bold uppercase text-sm">
-            <Link href="/" className="p-2 hover:bg-muted rounded-lg" onClick={() => setIsMobileMenuOpen(false)}>Jelajahi</Link>
+          <nav className="flex flex-col space-y-2 font-bold uppercase text-xs tracking-widest">
+            <Link href="/" className="p-3 hover:bg-muted rounded-xl" onClick={() => setIsMobileMenuOpen(false)}>Jelajahi</Link>
+            <Link href="/about" className="p-3 hover:bg-muted rounded-xl" onClick={() => setIsMobileMenuOpen(false)}>Tentang</Link>
             {isLoggedIn && (
-               <Link href="/upload" className="p-2 hover:bg-muted rounded-lg" onClick={() => setIsMobileMenuOpen(false)}>Unggah Karya</Link>
+               <Link href="/upload" className="p-3 hover:bg-muted rounded-xl" onClick={() => setIsMobileMenuOpen(false)}>Unggah Karya</Link>
             )}
           </nav>
         </div>
