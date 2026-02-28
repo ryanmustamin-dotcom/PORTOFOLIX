@@ -10,7 +10,23 @@ const firebaseConfig: FirebaseOptions = {
 };
 
 function initializeFirebase() {
-    return !getApps().length ? initializeApp(firebaseConfig) : getApp();
+    // Check if we are on the server during build time without API keys
+    if (!firebaseConfig.apiKey && typeof window === 'undefined') {
+        console.warn("Firebase API Key is missing during build time. Ensure Environment Variables are set in Vercel.");
+    }
+    
+    // Return the existing app if already initialized, or initialize a new one
+    // We use a try-catch to prevent build-time crashes if keys are completely missing
+    try {
+        if (getApps().length > 0) {
+            return getApp();
+        }
+        return initializeApp(firebaseConfig);
+    } catch (error) {
+        console.error("Firebase initialization failed:", error);
+        // Return a dummy object if initialization fails to prevent total build failure
+        return {} as any;
+    }
 }
 
 export { initializeFirebase };
