@@ -13,7 +13,7 @@ export default function Footer() {
             <Link href="/about" className="hover:text-primary transition-colors">Tentang</Link>
             <Link href="#" className="hover:text-primary transition-colors">Karir</Link>
             <Link href="#" className="hover:text-primary transition-colors">Kebijakan Privasi</Link>
-            <Link href="#" className="hover:text-primary transition-colors">Syarat & Ketentuan</Link>
+            <Link href="/terms" className="hover:text-primary transition-colors">Syarat & Ketentuan</Link>
           </nav>
           <p className="text-xs font-subheadline font-bold text-muted-foreground uppercase tracking-wider">&copy; {currentYear} PORTOFOLIX. SMK-IT As-Syifa.</p>
         </div>
