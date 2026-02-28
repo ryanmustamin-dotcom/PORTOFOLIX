@@ -20,20 +20,37 @@ export default function TermsPage() {
               <ShieldCheck className="h-8 w-8 text-primary" />
             </div>
             <h2 className="font-headline text-xl font-black tracking-tighter uppercase">
-              Aturan penggunaan aset di web
+              Ketentuan Penggunaan
             </h2>
           </div>
 
-          <div className="space-y-6">
-            <p className="font-subheadline text-lg md:text-xl font-bold text-primary tracking-tight uppercase">
-              Penting untuk DKV:
-            </p>
+          <div className="space-y-10">
             <p className="font-subheadline text-lg md:text-xl leading-relaxed text-foreground/80">
-              Seluruh konten berupa desain, video, dan kode program yang ditampilkan di situs ini adalah hak kekayaan intelektual dari siswa dan pengajar SMK-IT As-Syifa Boarding School.
+              Dengan mengakses situs web SMK-IT As-Syifa Boarding School, Anda menyetujui ketentuan berikut:
             </p>
-            <p className="font-subheadline text-lg md:text-xl leading-relaxed text-foreground/80">
-              Penggunaan karya untuk referensi pendidikan sangat diizinkan dengan mencantumkan sumber. Namun, dilarang keras menyalin atau mendistribusikan karya untuk kepentingan komersial tanpa izin tertulis dari pihak sekolah.
-            </p>
+
+            <div className="grid grid-cols-1 gap-8">
+              <div className="bg-muted/30 p-6 rounded-2xl border-l-4 border-primary">
+                <h3 className="font-headline text-sm font-black text-primary mb-3 uppercase tracking-tighter">Hak Kekayaan Intelektual</h3>
+                <p className="font-subheadline text-sm leading-relaxed text-foreground/70">
+                  Seluruh konten visual (desain, foto, video) dan kode program di situs ini adalah milik SMK-IT As-Syifa atau pihak ketiga yang memberikan lisensi. Penggunaan tanpa izin untuk tujuan komersial sangat dilarang.
+                </p>
+              </div>
+
+              <div className="bg-muted/30 p-6 rounded-2xl border-l-4 border-accent">
+                <h3 className="font-headline text-sm font-black text-accent mb-3 uppercase tracking-tighter">Penggunaan Situs</h3>
+                <p className="font-subheadline text-sm leading-relaxed text-foreground/70">
+                  Pengguna dilarang menggunakan situs ini untuk tindakan yang melanggar hukum atau merusak infrastruktur digital sekolah.
+                </p>
+              </div>
+
+              <div className="bg-muted/30 p-6 rounded-2xl border-l-4 border-foreground">
+                <h3 className="font-headline text-sm font-black text-foreground mb-3 uppercase tracking-tighter">Batasan Tanggung Jawab</h3>
+                <p className="font-subheadline text-sm leading-relaxed text-foreground/70">
+                  Kami berupaya menyediakan informasi yang akurat, namun tidak bertanggung jawab atas kerugian yang timbul akibat kesalahan teknis pada perangkat pengguna saat mengakses situs.
+                </p>
+              </div>
+            </div>
           </div>
           
           <div className="mt-12 pt-8 border-t border-muted flex flex-col items-center">
