@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { Search, Upload, LogOut, Settings, User, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -10,19 +10,14 @@ import { useUser, useAuth } from '@/firebase';
 import { signOut } from 'firebase/auth';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function Header() {
-  const { user, userProfile, loading } = useUser();
-  const auth = useAuth();
+function SearchInput() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  
   const [searchValue, setSearchValue] = useState(searchParams.get('q') || '');
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const handleLogout = async () => {
-    await signOut(auth);
-    router.push('/');
-  };
+  useEffect(() => {
+    setSearchValue(searchParams.get('q') || '');
+  }, [searchParams]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,12 +26,63 @@ export default function Header() {
     } else {
       router.push('/');
     }
-    setIsMobileMenuOpen(false);
   };
+
+  return (
+    <form onSubmit={handleSearch} className="hidden md:flex relative flex-1 max-w-md mx-8">
+      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+      <input 
+        placeholder="Cari karya, kreator..." 
+        value={searchValue}
+        onChange={(e) => setSearchValue(e.target.value)}
+        className="flex h-10 w-full rounded-full border border-input bg-muted/40 px-3 py-2 text-sm pl-10 focus:bg-white transition-all outline-none focus:ring-2 focus:ring-primary/20 font-subheadline" 
+      />
+    </form>
+  );
+}
+
+function MobileSearchInput({ onSearchComplete }: { onSearchComplete: () => void }) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [searchValue, setSearchValue] = useState(searchParams.get('q') || '');
 
   useEffect(() => {
     setSearchValue(searchParams.get('q') || '');
   }, [searchParams]);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchValue.trim()) {
+      router.push(`/?q=${encodeURIComponent(searchValue.trim())}`);
+    } else {
+      router.push('/');
+    }
+    onSearchComplete();
+  };
+
+  return (
+    <form onSubmit={handleSearch} className="relative w-full">
+      <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+      <input 
+        placeholder="Cari karya, kreator..." 
+        value={searchValue}
+        onChange={(e) => setSearchValue(e.target.value)}
+        className="flex h-12 w-full rounded-full border border-input bg-muted/40 px-4 py-2 text-sm pl-11 focus:bg-white outline-none font-subheadline" 
+      />
+    </form>
+  );
+}
+
+export default function Header() {
+  const { user, userProfile, loading } = useUser();
+  const auth = useAuth();
+  const router = useRouter();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    router.push('/');
+  };
 
   const isLoggedIn = !loading && user;
 
@@ -53,15 +99,9 @@ export default function Header() {
           </nav>
         </div>
 
-        <form onSubmit={handleSearch} className="hidden md:flex relative flex-1 max-w-md mx-8">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <input 
-            placeholder="Cari karya, kreator..." 
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-            className="flex h-10 w-full rounded-full border border-input bg-muted/40 px-3 py-2 text-sm pl-10 focus:bg-white transition-all outline-none focus:ring-2 focus:ring-primary/20 font-subheadline" 
-          />
-        </form>
+        <Suspense fallback={<div className="hidden md:block flex-1 max-w-md mx-8 h-10 bg-muted/20 rounded-full" />}>
+          <SearchInput />
+        </Suspense>
 
         <div className="flex items-center space-x-2 md:space-x-3">
           {isLoggedIn && userProfile ? (
@@ -128,15 +168,9 @@ export default function Header() {
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden border-t bg-white p-4 space-y-4 animate-in slide-in-from-top duration-300 font-subheadline shadow-xl">
-          <form onSubmit={handleSearch} className="relative w-full">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <input 
-              placeholder="Cari karya, kreator..." 
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              className="flex h-12 w-full rounded-full border border-input bg-muted/40 px-4 py-2 text-sm pl-11 focus:bg-white outline-none font-subheadline" 
-            />
-          </form>
+          <Suspense fallback={<div className="h-12 w-full bg-muted/20 rounded-full" />}>
+            <MobileSearchInput onSearchComplete={() => setIsMobileMenuOpen(false)} />
+          </Suspense>
           <nav className="flex flex-col space-y-1 font-bold uppercase text-xs tracking-widest">
             <Link href="/" className="p-4 hover:bg-muted/50 rounded-2xl flex items-center transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
               Jelajahi

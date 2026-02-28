@@ -162,7 +162,7 @@ export default function Home() {
     <div className="container py-8 px-4 md:px-8">
       <Suspense fallback={
         <div className="flex justify-center items-center py-20">
-          <Skeleton className="h-12 w-12 rounded-full" />
+          <div className="h-12 w-12 rounded-full border-4 border-primary border-t-transparent animate-spin" />
         </div>
       }>
         <HomeContent />

@@ -30,7 +30,15 @@ export default function RootLayout({
           <Suspense fallback={<div className="h-16 border-b bg-white" />}>
             <Header />
           </Suspense>
-          <main className="flex-grow">{children}</main>
+          <main className="flex-grow">
+            <Suspense fallback={
+              <div className="flex justify-center items-center py-20">
+                <div className="h-12 w-12 rounded-full border-4 border-primary border-t-transparent animate-spin" />
+              </div>
+            }>
+              {children}
+            </Suspense>
+          </main>
           <Footer />
           <Toaster />
         </FirebaseClientProvider>
