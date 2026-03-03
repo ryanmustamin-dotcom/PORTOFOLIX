@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
@@ -71,7 +70,7 @@ export default function UploadForm() {
           const canvas = document.createElement('canvas');
           let width = img.width;
           let height = img.height;
-          const MAX_WIDTH = 1920;
+          const MAX_WIDTH = 1600; // Optimized width for web
           if (width > MAX_WIDTH) {
             height *= MAX_WIDTH / width;
             width = MAX_WIDTH;
@@ -83,7 +82,7 @@ export default function UploadForm() {
           canvas.toBlob((blob) => {
             if (blob) resolve(blob);
             else reject(new Error('Compression failed'));
-          }, 'image/jpeg', 0.8);
+          }, 'image/jpeg', 0.75); // Slightly more aggressive compression
         };
       };
       reader.onerror = (error) => reject(error);
@@ -145,15 +144,16 @@ export default function UploadForm() {
 
     setIsSubmitting(true);
     try {
-        const mediaUrls: string[] = [];
-        for (const file of selectedFiles) {
+        // Parallelize compression and upload for better performance
+        const uploadPromises = selectedFiles.map(async (file) => {
             const compressedBlob = await compressImage(file);
-            const fileName = `${Date.now()}-${file.name.replace(/[^a-z0-9.]/gi, '_').toLowerCase()}`;
+            const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 7)}-${file.name.replace(/[^a-z0-9.]/gi, '_').toLowerCase()}`;
             const fileRef = ref(storage, `projects/${user.uid}/${fileName}`);
             const uploadResult = await uploadBytes(fileRef, compressedBlob);
-            const downloadUrl = await getDownloadURL(uploadResult.ref);
-            mediaUrls.push(downloadUrl);
-        }
+            return getDownloadURL(uploadResult.ref);
+        });
+
+        const mediaUrls = await Promise.all(uploadPromises);
 
         const projectData = {
             title: values.title,
@@ -177,6 +177,7 @@ export default function UploadForm() {
         toast({ title: "Karya Terbit!", description: "Proyek Anda berhasil disimpan di cloud." });
         router.push(`/projects/${docRef.id}`);
     } catch (error: any) {
+        console.error("Upload error:", error);
         toast({ variant: 'destructive', title: "Gagal Mengunggah", description: error.message });
     } finally {
         setIsSubmitting(false);
@@ -252,7 +253,12 @@ export default function UploadForm() {
         </div>
 
         <Button type="submit" size="lg" disabled={isSubmitting} className="w-full h-14 text-lg">
-            {isSubmitting ? 'Mengunggah ke Cloud...' : 'Terbitkan Sekarang'}
+            {isSubmitting ? (
+              <div className="flex items-center gap-2">
+                <Loader2 className="h-5 w-5 animate-spin" />
+                Sedang Mengunggah...
+              </div>
+            ) : 'Terbitkan Sekarang'}
         </Button>
       </form>
     </Form>

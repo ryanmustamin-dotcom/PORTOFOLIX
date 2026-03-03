@@ -1,4 +1,3 @@
-
 'use client';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -7,8 +6,8 @@ import { useFirestore, useStorage } from '@/firebase';
 import { doc, updateDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { Button } from './ui/button';
-import { Input } from './input';
-import { Textarea } from './textarea';
+import { Input } from './ui/input';
+import { Textarea } from './ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from './ui/form';
 import { useToast } from '@/hooks/use-toast';
 import type { UserProfile } from '@/lib/types';
@@ -71,24 +70,33 @@ export default function EditProfileForm({ userProfile, onFinished }: EditProfile
                 socialLinks: values.socialLinks,
             };
 
-            // Upload Avatar if selected
+            const uploadTasks = [];
+
+            // Parallelize Avatar Upload
             if (values.avatarFile?.[0]) {
                 const avatarRef = ref(storage, `profiles/${userProfile.uid}/avatar-${Date.now()}`);
-                const snapshot = await uploadBytes(avatarRef, values.avatarFile[0]);
-                updatedData.avatarUrl = await getDownloadURL(snapshot.ref);
+                const task = uploadBytes(avatarRef, values.avatarFile[0]).then(async (snapshot) => {
+                    updatedData.avatarUrl = await getDownloadURL(snapshot.ref);
+                });
+                uploadTasks.push(task);
             }
 
-            // Upload Header if selected
+            // Parallelize Header Upload
             if (values.headerFile?.[0]) {
                 const headerRef = ref(storage, `profiles/${userProfile.uid}/header-${Date.now()}`);
-                const snapshot = await uploadBytes(headerRef, values.headerFile[0]);
-                updatedData.headerUrl = await getDownloadURL(snapshot.ref);
+                const task = uploadBytes(headerRef, values.headerFile[0]).then(async (snapshot) => {
+                    updatedData.headerUrl = await getDownloadURL(snapshot.ref);
+                });
+                uploadTasks.push(task);
             }
 
+            await Promise.all(uploadTasks);
             await updateDoc(userRef, updatedData);
+            
             toast({ title: 'Profil diperbarui!' });
             if (onFinished) onFinished();
         } catch (error: any) {
+            console.error("Profile update error:", error);
             toast({ variant: 'destructive', title: 'Error', description: error.message });
         } finally {
             setIsSubmitting(false);
@@ -136,7 +144,7 @@ export default function EditProfileForm({ userProfile, onFinished }: EditProfile
 
             <Button type="submit" disabled={isSubmitting} className="w-full">
                 {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Simpan Perubahan
+                {isSubmitting ? 'Menyimpan...' : 'Simpan Perubahan'}
             </Button>
         </form>
       </Form>
