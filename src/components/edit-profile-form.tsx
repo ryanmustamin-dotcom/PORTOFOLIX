@@ -1,22 +1,24 @@
+
 'use client';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { useFirestore } from '@/firebase';
+import { useFirestore, useStorage } from '@/firebase';
 import { doc, updateDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Textarea } from './ui/textarea';
+import { Input } from './input';
+import { Textarea } from './textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from './ui/form';
 import { useToast } from '@/hooks/use-toast';
 import type { UserProfile } from '@/lib/types';
-import { Github, Globe, Instagram, Loader2, Twitter } from 'lucide-react';
+import { Github, Instagram, Loader2, Twitter } from 'lucide-react';
 import { useState } from 'react';
 
 const formSchema = z.object({
-    name: z.string().min(2, 'Name must be at least 2 characters.'),
-    username: z.string().min(3, 'Username must be at least 3 characters.'),
-    bio: z.string().max(160, 'Bio must be less than 160 characters.').optional(),
+    name: z.string().min(2, 'Nama minimal 2 karakter.'),
+    username: z.string().min(3, 'Username minimal 3 karakter.'),
+    bio: z.string().max(160, 'Bio maksimal 160 karakter.').optional(),
     location: z.string().optional(),
     status: z.string().optional(),
     socialLinks: z.object({
@@ -24,8 +26,8 @@ const formSchema = z.object({
         instagram: z.string().url().optional().or(z.literal('')),
         github: z.string().url().optional().or(z.literal('')),
     }).optional(),
-    avatarUrl: z.any().optional(),
-    headerUrl: z.any().optional(),
+    avatarFile: z.any().optional(),
+    headerFile: z.any().optional(),
 });
 
 type EditProfileFormProps = {
@@ -36,6 +38,7 @@ type EditProfileFormProps = {
 export default function EditProfileForm({ userProfile, onFinished }: EditProfileFormProps) {
     const { toast } = useToast();
     const firestore = useFirestore();
+    const storage = useStorage();
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -59,27 +62,34 @@ export default function EditProfileForm({ userProfile, onFinished }: EditProfile
         setIsSubmitting(true);
         try {
             const userRef = doc(firestore, 'users', userProfile.uid);
-            
-            // For now, we simulate image uploads with new picsum photos
-            const updatedValues: Partial<UserProfile> = { ...values };
-            if (values.avatarUrl && values.avatarUrl.length > 0) {
-                updatedValues.avatarUrl = `https://picsum.photos/seed/${userProfile.uid}-${Date.now()}/200/200`;
-            } else {
-                delete updatedValues.avatarUrl;
-            }
-            if (values.headerUrl && values.headerUrl.length > 0) {
-                updatedValues.headerUrl = `https://picsum.photos/seed/header-${userProfile.uid}-${Date.now()}/1200/300`;
-            } else {
-                delete updatedValues.headerUrl;
+            const updatedData: any = {
+                name: values.name,
+                username: values.username,
+                bio: values.bio,
+                location: values.location,
+                status: values.status,
+                socialLinks: values.socialLinks,
+            };
+
+            // Upload Avatar if selected
+            if (values.avatarFile?.[0]) {
+                const avatarRef = ref(storage, `profiles/${userProfile.uid}/avatar-${Date.now()}`);
+                const snapshot = await uploadBytes(avatarRef, values.avatarFile[0]);
+                updatedData.avatarUrl = await getDownloadURL(snapshot.ref);
             }
 
-            await updateDoc(userRef, updatedValues);
+            // Upload Header if selected
+            if (values.headerFile?.[0]) {
+                const headerRef = ref(storage, `profiles/${userProfile.uid}/header-${Date.now()}`);
+                const snapshot = await uploadBytes(headerRef, values.headerFile[0]);
+                updatedData.headerUrl = await getDownloadURL(snapshot.ref);
+            }
 
-            toast({ title: 'Profile updated successfully!' });
+            await updateDoc(userRef, updatedData);
+            toast({ title: 'Profil diperbarui!' });
             if (onFinished) onFinished();
-        } catch (error) {
-            console.error('Error updating profile', error);
-            toast({ variant: 'destructive', title: 'Error', description: 'Failed to update profile.' });
+        } catch (error: any) {
+            toast({ variant: 'destructive', title: 'Error', description: error.message });
         } finally {
             setIsSubmitting(false);
         }
@@ -89,93 +99,44 @@ export default function EditProfileForm({ userProfile, onFinished }: EditProfile
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField control={form.control} name="name" render={({ field }) => (
-              <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl><Input placeholder="Your full name" {...field} /></FormControl>
-                  <FormMessage />
-              </FormItem>
+              <FormItem><FormLabel>Nama Lengkap</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>
             )} />
             <FormField control={form.control} name="username" render={({ field }) => (
-                <FormItem>
-                    <FormLabel>Username</FormLabel>
-                    <FormControl><Input placeholder="Your username" {...field} /></FormControl>
-                    <FormMessage />
-                </FormItem>
+                <FormItem><FormLabel>Username</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>
             )} />
              <FormField control={form.control} name="status" render={({ field }) => (
-                <FormItem>
-                    <FormLabel>Status</FormLabel>
-                    <FormControl><Input placeholder="e.g. Graphic Designer @ Studio" {...field} /></FormControl>
-                    <FormMessage />
-                </FormItem>
+                <FormItem><FormLabel>Pekerjaan/Status</FormLabel><FormControl><Input placeholder="e.g. Designer" {...field} /></FormControl></FormItem>
             )} />
             <FormField control={form.control} name="bio" render={({ field }) => (
-                <FormItem>
-                    <FormLabel>Bio</FormLabel>
-                    <FormControl><Textarea placeholder="A short bio about yourself" {...field} /></FormControl>
-                    <FormMessage />
-                </FormItem>
+                <FormItem><FormLabel>Bio</FormLabel><FormControl><Textarea {...field} /></FormControl></FormItem>
             )} />
             <FormField control={form.control} name="location" render={({ field }) => (
-                <FormItem>
-                    <FormLabel>Location</FormLabel>
-                    <FormControl><Input placeholder="e.g., San Francisco, CA" {...field} /></FormControl>
-                    <FormMessage />
-                </FormItem>
+                <FormItem><FormLabel>Lokasi</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>
             )} />
 
             <div className="space-y-2">
-                <FormLabel>Social Links</FormLabel>
+                <FormLabel>Media Sosial</FormLabel>
                 <div className="space-y-2">
                      <FormField control={form.control} name="socialLinks.twitter" render={({ field }) => (
-                        <FormItem>
-                            <div className="flex items-center gap-2">
-                                <Twitter className="h-5 w-5 text-muted-foreground" />
-                                <FormControl><Input placeholder="https://twitter.com/username" {...field} /></FormControl>
-                            </div>
-                            <FormMessage />
-                        </FormItem>
+                        <FormItem><div className="flex items-center gap-2"><Twitter className="h-4 w-4" /><FormControl><Input placeholder="Twitter URL" {...field} /></FormControl></div></FormItem>
                     )} />
                      <FormField control={form.control} name="socialLinks.instagram" render={({ field }) => (
-                        <FormItem>
-                            <div className="flex items-center gap-2">
-                                <Instagram className="h-5 w-5 text-muted-foreground" />
-                                <FormControl><Input placeholder="https://instagram.com/username" {...field} /></FormControl>
-                            </div>
-                             <FormMessage />
-                        </FormItem>
-                    )} />
-                     <FormField control={form.control} name="socialLinks.github" render={({ field }) => (
-                        <FormItem>
-                            <div className="flex items-center gap-2">
-                                <Github className="h-5 w-5 text-muted-foreground" />
-                                <FormControl><Input placeholder="https://github.com/username" {...field} /></FormControl>
-                            </div>
-                             <FormMessage />
-                        </FormItem>
+                        <FormItem><div className="flex items-center gap-2"><Instagram className="h-4 w-4" /><FormControl><Input placeholder="Instagram URL" {...field} /></FormControl></div></FormItem>
                     )} />
                 </div>
             </div>
 
-            <FormField control={form.control} name="avatarUrl" render={({ field }) => (
-              <FormItem>
-                <FormLabel>Avatar Image</FormLabel>
-                <FormControl><Input type="file" onChange={(e) => field.onChange(e.target.files)} /></FormControl>
-                <FormMessage />
-              </FormItem>
+            <FormField control={form.control} name="avatarFile" render={({ field }) => (
+              <FormItem><FormLabel>Ganti Foto Profil</FormLabel><FormControl><Input type="file" accept="image/*" onChange={(e) => field.onChange(e.target.files)} /></FormControl></FormItem>
             )}/>
 
-            <FormField control={form.control} name="headerUrl" render={({ field }) => (
-              <FormItem>
-                <FormLabel>Header Image</FormLabel>
-                <FormControl><Input type="file" onChange={(e) => field.onChange(e.target.files)} /></FormControl>
-                <FormMessage />
-              </FormItem>
+            <FormField control={form.control} name="headerFile" render={({ field }) => (
+              <FormItem><FormLabel>Ganti Banner Profil</FormLabel><FormControl><Input type="file" accept="image/*" onChange={(e) => field.onChange(e.target.files)} /></FormControl></FormItem>
             )}/>
 
             <Button type="submit" disabled={isSubmitting} className="w-full">
                 {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Save Changes
+                Simpan Perubahan
             </Button>
         </form>
       </Form>
